@@ -60,11 +60,9 @@ const initialize = () => {
         keyboardSates[event.key] = false;
     }
 
-    for (let i = 0; i < 100000; i++) {
-        const ship = new Ship();
-        ship.pos.setPos(100, 100);
-        entities.push(ship);
-    }
+    const ship = new Ship();
+    ship.pos.setPos(100, 100);
+    entities.push(ship);
 
     mainLoop();
 };
