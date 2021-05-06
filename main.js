@@ -6,22 +6,37 @@ let currentFrameRequestId;
 const entities = [];
 const keyboardSates = new Map();
 
+let fps = 'test';
+
 const mainLoop = () => {
 
-    if (keyboardSates["ArrowRight"]) {
-        entities[0].pos.x++;
-    }
-
-    if (keyboardSates["ArrowLeft"]) {
-        entities[0].pos.x--;
-    }
+    const start = performance.now();
 
     context.reset();
+    context.save();
 
     for (const entity of entities) {
+
+        if (keyboardSates["ArrowRight"]) {
+            entity.pos.turnRight();
+        }
+
+        if (keyboardSates["ArrowLeft"]) {
+            entity.pos.turnLeft();
+        }
+
         entity.draw(context);
     }
 
+    context.restore();
+    context.fillStyle = "#a0937d";
+    context.font = "bold 16px Arial";
+    const textSize = context.measureText(fps);
+    context.fillText(fps,  (canvas.width / 2) - (textSize.width / 2), canvas.height / 2);
+
+    const stop = performance.now();
+
+    fps = `${1000 / (stop - start)} fps`
     currentFrameRequestId = window.requestAnimationFrame(mainLoop);
 };
 
@@ -45,9 +60,11 @@ const initialize = () => {
         keyboardSates[event.key] = false;
     }
 
-    const ship = new Ship();
-    ship.pos.setPos(100, 100);
-    entities.push(ship);
+    for (let i = 0; i < 100000; i++) {
+        const ship = new Ship();
+        ship.pos.setPos(100, 100);
+        entities.push(ship);
+    }
 
     mainLoop();
 };

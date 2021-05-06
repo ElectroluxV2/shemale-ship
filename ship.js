@@ -3,9 +3,7 @@ import { Pos } from "./pos.js"
 export class Ship {
 
     constructor() {
-        console.log('ship');
         this.pos.setPos(0, 0);
-        this.pos.setAngle(0);
     };
 
     pos = new Pos();
@@ -26,5 +24,6 @@ export class Ship {
         ctx.lineTo(this.pos.x, this.pos.y-65);
         ctx.closePath();
         ctx.stroke();
+        ctx.restore()
     };
 }
