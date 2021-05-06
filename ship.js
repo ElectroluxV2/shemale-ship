@@ -17,7 +17,7 @@ export class Ship {
         // body
 
         this.ctx.translate(this.pos.x, this.pos.y)
-        this.ctx.rotate(this.angle * Math.PI / 180)
+        this.ctx.rotate(this.pos.angle * Math.PI / 180)
         this.ctx.translate(-this.pos.x, -this.pos.y)
         this.ctx.strokeStyle = "#FFF"
         this.ctx.beginPath();
