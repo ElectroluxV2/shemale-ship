@@ -1,15 +1,22 @@
-"use strict";
 import { Ship } from "./ship.js";
 
-window.onload = () => {
-    window.requestAnimationFrame(a);
-}
+const canvas = document.getElementById("canvas");
+const canvasCTX = canvas.getContext("2d");
+let currentFrameRequestId;
+const entities = [];
 
-const a = () => {
+const mainLoop = () => {
+    canvasCTX.reset();
+
+    for (const entity of entities) {
+        entity.draw(canvasCTX);
+    }
+
+    currentFrameRequestId = window.requestAnimationFrame(mainLoop);
+};
+
+const initialize = () => {
     const ship = new Ship();
-    console.log(ship);
-
-    const canvas = document.getElementsByTagName('canvas')[0];
-
-    console.log(canvas);
-}
+    entities.push(ship);
+    mainLoop();
+};
