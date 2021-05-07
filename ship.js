@@ -29,7 +29,5 @@ export class Ship extends Entity {
         ctx.lineTo(this.pos.x + 90 * this.angledVector().x, this.pos.y - 90 * this.angledVector().y)
         ctx.closePath()
         ctx.stroke()
-        console.log(this.angledVector())
-        console.log(this.pos.angle)
     };
 }
