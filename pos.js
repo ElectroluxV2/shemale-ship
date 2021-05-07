@@ -7,6 +7,10 @@ export class Pos {
         this.y = y;
     }
 
+    setAngle (n) {
+        this.angle = n
+    }
+
     turnRight () {
         this.angle++;
     }
