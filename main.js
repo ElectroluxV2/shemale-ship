@@ -18,11 +18,11 @@ const mainLoop = () => {
     for (const entity of entities) {
 
         if (keyboardSates["ArrowRight"]) {
-            entity.pos.turnRight();
+           // entity.pos.turnRight();
         }
 
         if (keyboardSates["ArrowLeft"]) {
-            entity.pos.turnLeft();
+           // entity.pos.turnLeft();
         }
 
         entity.draw(context);
@@ -33,11 +33,11 @@ const mainLoop = () => {
     context.fillStyle = "#a0937d";
     context.font = "bold 16px Arial";
     const textSize = context.measureText(fps);
-    context.fillText(fps,  canvas.width - textSize.width, 16);
+    context.fillText(fps,  canvas.width - textSize.width, textSize.fontBoundingBoxAscent);
 
     const stop = performance.now();
 
-    fps = `${1000 / (stop - start)} fps`
+    fps = `${(1000 / (stop - start)).toFixed(2)} fps`
     currentFrameRequestId = window.requestAnimationFrame(mainLoop);
 };
 
@@ -63,6 +63,7 @@ const initialize = () => {
 
     const ship = new Ship();
     ship.pos.setPos(100, 100);
+    ship.pos.angle = 23000.5
     entities.push(ship);
 
     mainLoop();

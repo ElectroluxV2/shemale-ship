@@ -1,6 +1,9 @@
-import { Point } from "./point";
+import { Point } from "./point.js";
 
 export class Vector extends Point {
+
+    static i = Vector.makeVector(new Point(0, 0), new Point(1, 0));
+    static j = Vector.makeVector(new Point(0, 0), new Point(0, 1));
 
     static makeVector(p1, p2) {
         return new Vector(p2.x - p1.x, p2.y - p1.y);

@@ -1,10 +1,10 @@
 export class Point {
-  #x;
-  #y;
+  x;
+  y;
 
   constructor(x = 0, y = 0) {
-    this.#x = x;
-    this.#y = y;
+    this.x = x;
+    this.y = y;
   }
 
   static distance(p1, p2) {
@@ -19,7 +19,7 @@ export class Point {
    * Creates deep copy
    */
   duplicate() {
-    return new Point(this.#x, this.#y);
+    return new Point(this.x, this.y);
   }
 
   distance(p2) {
