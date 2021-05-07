@@ -26,13 +26,14 @@ const mainLoop = () => {
         }
 
         entity.draw(context);
+        context.resetTransform();
     }
 
     context.restore();
     context.fillStyle = "#a0937d";
     context.font = "bold 16px Arial";
     const textSize = context.measureText(fps);
-    context.fillText(fps,  (canvas.width / 2) - (textSize.width / 2), canvas.height / 2);
+    context.fillText(fps,  canvas.width - textSize.width, 16);
 
     const stop = performance.now();
 
