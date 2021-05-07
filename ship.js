@@ -24,6 +24,5 @@ export class Ship {
         ctx.lineTo(this.pos.x, this.pos.y-65);
         ctx.closePath();
         ctx.stroke();
-        ctx.restore()
     };
 }
