@@ -19,5 +19,3 @@ function physicsLoop(){
 }
 
 physicsLoop()
-
-//chuj
