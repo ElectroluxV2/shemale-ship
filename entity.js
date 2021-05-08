@@ -4,7 +4,6 @@ import { Point } from "./point.js";
 
 export class Entity {
     #position;
-    #previousPosition;
 
     constructor(position = new Pos()) {
         this.#position = position;
