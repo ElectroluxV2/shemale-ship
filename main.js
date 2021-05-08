@@ -4,8 +4,7 @@ const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
 let currentFrameRequestId;
 const entities = [];
-const keyboardSates = new Map();
-
+const keyboard = new Worker("./keyboard.js");
 let fps = 'test';
 
 const mainLoop = () => {
@@ -16,14 +15,6 @@ const mainLoop = () => {
     context.save();
 
     for (const entity of entities) {
-
-        if (keyboardSates["ArrowRight"]) {
-           // entity.pos.turnRight();
-        }
-
-        if (keyboardSates["ArrowLeft"]) {
-           // entity.pos.turnLeft();
-        }
 
         entity.draw(context);
         context.resetTransform();
@@ -54,18 +45,17 @@ const initialize = () => {
     }
 
     window.onkeydown = event => {
-        keyboardSates[event.key] = true;
+        keyboard.postMessage({ship: ship, key: event.key, state: true});
     }
 
     window.onkeyup = event => {
-        keyboardSates[event.key] = false;
+        keyboard.postMessage({key: event.key, state: false});
     }
 
     const ship = new Ship();
     ship.pos.setPos(100, 100);
-    ship.pos.angle = 23000.5
+    ship.pos.angle = 0
     entities.push(ship);
-
     mainLoop();
 };
 
