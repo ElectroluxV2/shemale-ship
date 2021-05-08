@@ -1,7 +1,7 @@
 import { Entity } from "./entity.js";
 
 export class Ship extends Entity {
-    draw (ctx) {
+    draw(ctx) {
         // center
         ctx.fillStyle = "#FF0000";
         ctx.fillRect(this.pos.x-2, this.pos.y-2, 4, 4);
@@ -29,7 +29,5 @@ export class Ship extends Entity {
         ctx.lineTo(this.pos.x + 90 * this.angledVector().x, this.pos.y - 90 * this.angledVector().y)
         ctx.closePath()
         ctx.stroke()
-        console.log(this.angledVector())
-        console.log(this.pos.angle)
     };
 }
