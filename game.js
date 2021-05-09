@@ -13,7 +13,7 @@ export class Game {
         this.#context = this.#canvas.getContext("2d");
 
         // Add main ship
-        this.#ship = new Ship(new Pos(this.#canvas.width / 2, this.#canvas.height / 2, 1231345234.12312324154));
+        this.#ship = new Ship(new Pos(this.#canvas.width / 2, this.#canvas.height / 2, 45));
 
         this.mainLoop();
     }
@@ -27,21 +27,22 @@ export class Game {
 
         // Handle user input (In feature communicate with physic worker)
         if (this.keyboardStates["D"] || this.keyboardStates["d"]) {
-            PhysicsEngine.accRight(this.#ship, 0.05)
+            PhysicsEngine.accRight(this.#ship, 1);
         }
 
         if (this.keyboardStates["A"] || this.keyboardStates["a"]) {
-            PhysicsEngine.accLeft(this.#ship, 0.05)
+            PhysicsEngine.accLeft(this.#ship, 1);
         }
 
         if (this.keyboardStates["S"] || this.keyboardStates["s"]) {
-            const direction = this.#ship.angledVector().reverse();
+            const direction = this.#ship.angledVector().reverse().multiply(1);
             PhysicsEngine.accX(this.#ship, direction.x);
             PhysicsEngine.accY(this.#ship, direction.y);
         }
 
         if (this.keyboardStates["W"] || this.keyboardStates["w"]) {
-            const direction = this.#ship.angledVector();
+            const direction = this.#ship.angledVector().multiply(1);
+            console.log(`${direction.x} ${direction.y}`)
             PhysicsEngine.accX(this.#ship, direction.x);
             PhysicsEngine.accY(this.#ship, direction.y);
         }
@@ -51,10 +52,6 @@ export class Game {
         this.#ship.draw(this.#context);
         this.#context.resetTransform()
 
-        let counter = 0;
-        for (let i = 0; i < 1000000; i++) {
-            counter ++;
-        }
 
         // Measure frame time
         const stop = performance.now()
