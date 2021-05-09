@@ -1,62 +1,47 @@
-import { Ship } from "./ship.js";
+import { Game } from "./game.js";
 
-const canvas = document.getElementById("canvas");
-const context = canvas.getContext("2d");
-let currentFrameRequestId;
-const entities = [];
-const keyboard = new Worker("./keyboard.js");
-let fps = 'test';
+let game = null;
+let canvas = null;
 
-const mainLoop = () => {
-
-    const start = performance.now();
-
-    context.reset();
-    context.save();
-
-    for (const entity of entities) {
-
-        entity.draw(context);
-        context.resetTransform();
+OffscreenCanvasRenderingContext2D.prototype.reset = OffscreenCanvasRenderingContext2D.prototype.reset || function (preserveTransform) {
+    if (preserveTransform) {
+        this.save();
+        this.setTransform(1, 0, 0, 1, 0, 0);
     }
 
-    context.restore();
-    context.fillStyle = "#a0937d";
-    context.font = "bold 16px Arial";
-    const textSize = context.measureText(fps);
-    context.fillText(fps,  canvas.width - textSize.width, textSize.fontBoundingBoxAscent);
+    this.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    const stop = performance.now();
-
-    fps = `${(1000 / (stop - start)).toFixed(2)} fps`
-    currentFrameRequestId = window.requestAnimationFrame(mainLoop);
+    if (preserveTransform) {
+        this.restore();
+    }
 };
 
-const initialize = () => {
-    // Change context dimensions
-    canvas.height = canvas.parentElement.offsetHeight * window.devicePixelRatio;
-    canvas.width = canvas.parentElement.offsetWidth * window.devicePixelRatio;
-    context.scale(window.devicePixelRatio, window.devicePixelRatio);
+onmessage = ({data} = event) => {
 
-    window.onresize = () => {
-        canvas.height = canvas.parentElement.offsetHeight * window.devicePixelRatio;
-        canvas.width = canvas.parentElement.offsetWidth * window.devicePixelRatio;
-        context.scale(window.devicePixelRatio, window.devicePixelRatio);
+    switch (data.type) {
+        case "windowOnKeyDown":
+            game.keyboardStates[data.key] = true;
+            break;
+        case "windowOnKeyUp":
+            game.keyboardStates[data.key] = false;
+            break;
+        case "windowOnResize":
+
+            // Adjust to new dimensions
+            canvas.height = data.windowInnerHeight * data.windowDevicePixelRatio;
+            canvas.width = data.windowInnerWidth * data.windowDevicePixelRatio;
+            canvas.getContext("2d").scale(data.windowDevicePixelRatio, data.windowDevicePixelRatio);
+            break;
+        case "transferCanvas":
+            canvas = data.canvas;
+
+            // Adjust to screen
+            canvas.height = data.windowInnerHeight * data.windowDevicePixelRatio;
+            canvas.width = data.windowInnerWidth * data.windowDevicePixelRatio;
+            canvas.getContext("2d").scale(data.windowDevicePixelRatio, data.windowDevicePixelRatio);
+
+            // Crate new object only when canvas is present
+            game = new Game(canvas);
+            break;
     }
-
-    window.onkeydown = event => {
-        keyboard.postMessage({ship: ship, key: event.key, state: true});
-    }
-
-    window.onkeyup = event => {
-        keyboard.postMessage({key: event.key, state: false});
-    }
-
-    const ship = new Ship();
-    ship.pos.setPos(100, 100);
-    ship.pos.angle = 0
-    entities.push(ship);
-    mainLoop();
 };
-
-initialize();
