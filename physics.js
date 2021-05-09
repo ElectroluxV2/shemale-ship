@@ -1,6 +1,7 @@
 export class PhysicsEngine {
 
-static opor = 0.3
+static opor = 0.95
+static katopor = 0.85
 
 static accX(entity, value){
     entity.currAccX += value
@@ -19,14 +20,14 @@ static accRight(entity, value){
 }
 
 static physicsLoop(entity){
-    entity.position.x += entity.currAccX;
-    entity.currAccX -= PhysicsEngine.opor;
-    entity.position.y += entity.currAccY;
-    entity.currAccY -= PhysicsEngine.opor;
-    entity.position.angle += entity.currAccAngular;
 
-    if (entity.currAccX < 0) entity.currAccX = 0;
-    if (entity.currAccY < 0) entity.currAccY = 0;
+    entity.position.x += entity.currAccX;
+    entity.currAccX *= PhysicsEngine.opor;
+    entity.position.y-= entity.currAccY;
+    entity.currAccY *= PhysicsEngine.opor;
+    entity.position.angle += entity.currAccAngular;
+    entity.currAccAngular *= PhysicsEngine.katopor
+
 }
 
 }
