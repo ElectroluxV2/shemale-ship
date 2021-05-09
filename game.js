@@ -1,5 +1,6 @@
 import { Ship } from "./ship.js";
 import { Pos } from "./pos.js";
+import { PhysicsEngine } from "./physics.js"
 
 export class Game {
     keyboardStates = new Map();
@@ -25,20 +26,35 @@ export class Game {
         this.#context.reset();
 
         // Handle user input (In feature communicate with physic worker)
-        if (this.keyboardStates["D"]) {
-
+        if (this.keyboardStates["D"] || this.keyboardStates["d"]) {
+            PhysicsEngine.accRight(this.#ship, 0.05)
         }
 
-        if (this.keyboardStates["A"]) {
-
+        if (this.keyboardStates["A"] || this.keyboardStates["a"]) {
+            PhysicsEngine.accLeft(this.#ship, 0.05)
         }
 
-        if (this.keyboardStates["S"]) {
-
+        if (this.keyboardStates["S"] || this.keyboardStates["s"]) {
+            const direction = this.#ship.angledVector().reverse();
+            PhysicsEngine.accX(this.#ship, direction.x);
+            PhysicsEngine.accY(this.#ship, direction.y);
         }
+
+        if (this.keyboardStates["W"] || this.keyboardStates["w"]) {
+            const direction = this.#ship.angledVector();
+            PhysicsEngine.accX(this.#ship, direction.x);
+            PhysicsEngine.accY(this.#ship, direction.y);
+        }
+
+        PhysicsEngine.physicsLoop(this.#ship);
 
         this.#ship.draw(this.#context);
         this.#context.resetTransform()
+
+        let counter = 0;
+        for (let i = 0; i < 1000000; i++) {
+            counter ++;
+        }
 
         // Measure frame time
         const stop = performance.now()

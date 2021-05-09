@@ -22,10 +22,10 @@ window.onresize = event => mainWorker.postMessage({
     windowDevicePixelRatio: window.devicePixelRatio
 });
 
-window.onkeydown = event => mainWorker.postMessage({
+window.onkeydown = event => { mainWorker.postMessage({
     type: "windowOnKeyDown",
     key: event.key
-});
+})};
 
 window.onkeyup = event => mainWorker.postMessage({
     type: "windowOnKeyUp",
