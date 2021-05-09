@@ -44,7 +44,7 @@ export class Game {
         const stop = performance.now()
         this.#context.fillStyle = "#a0937d";
         this.#context.font = "bold 16px Arial";
-        const text = `${1000 / (stop - start)}`;
+        const text = `${(1000 / (stop - start)).toFixed(2)} fps`;
         const textSize = this.#context.measureText(text);
         this.#context.fillText(text, this.#canvas.width - textSize.width, textSize.fontBoundingBoxAscent);
 
