@@ -23,14 +23,16 @@ export class Ship extends Entity {
 
         // direction
 
+        const direction = this.angledVector();
+
         ctx.translate(this.position.x, this.position.y);
         ctx.rotate(-this.position.angle * Math.PI / 180);
         ctx.translate(-this.position.x, -this.position.y);
-        ctx.strokeStyle = "#FF0000"
-        ctx.beginPath()
-        ctx.moveTo(this.position.x, this.position.y)
-        ctx.lineTo(this.position.x + this.currAccX, this.position.y - this.currAccY)
-        ctx.closePath()
-        ctx.stroke()
+        ctx.strokeStyle = "#FF0000";
+        ctx.beginPath();
+        ctx.moveTo(this.position.x, this.position.y);
+        ctx.lineTo(this.position.x + 50 * direction.x, this.position.y - 50 * direction.y);
+        ctx.closePath();
+        ctx.stroke();
     };
 }
