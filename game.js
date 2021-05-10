@@ -27,24 +27,25 @@ export class Game {
 
         // Handle user input (In feature communicate with physic worker)
         if (this.keyboardStates["D"] || this.keyboardStates["d"]) {
-            PhysicsEngine.accRight(this.#ship, 1);
+            PhysicsEngine.accRight(this.#ship, 0.5);
         }
 
         if (this.keyboardStates["A"] || this.keyboardStates["a"]) {
-            PhysicsEngine.accLeft(this.#ship, 1);
+            PhysicsEngine.accLeft(this.#ship, 0.5);
         }
 
         if (this.keyboardStates["S"] || this.keyboardStates["s"]) {
-            const direction = this.#ship.angledVector().reverse().multiply(1);
-            PhysicsEngine.accX(this.#ship, direction.x);
-            PhysicsEngine.accY(this.#ship, direction.y);
+            // const direction = this.#ship.angledVector().reverse().multiply(1);
+            // PhysicsEngine.accX(this.#ship, direction.x);
+            // PhysicsEngine.accY(this.#ship, direction.y);
+            PhysicsEngine.acc(this.#ship, -1)
         }
 
         if (this.keyboardStates["W"] || this.keyboardStates["w"]) {
-            const direction = this.#ship.angledVector().multiply(1);
-            console.log(`${direction.x} ${direction.y}`)
-            PhysicsEngine.accX(this.#ship, direction.x);
-            PhysicsEngine.accY(this.#ship, direction.y);
+            // const direction = this.#ship.angledVector().multiply(1);
+            // PhysicsEngine.accX(this.#ship, direction.x);
+            // PhysicsEngine.accY(this.#ship, direction.y);
+            PhysicsEngine.acc(this.#ship, 1)
         }
 
         PhysicsEngine.physicsLoop(this.#ship);

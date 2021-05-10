@@ -1,8 +1,9 @@
 import { Entity } from "./entity.js";
 
 export class Ship extends Entity {
-    currAccX = 0;
-    currAccY = 0;
+    // currAccX = 0;
+    // currAccY = 0;
+    currAcc = 0;
     currAccAngular = 0;
     draw(ctx) {
         // center
@@ -14,6 +15,7 @@ export class Ship extends Entity {
         ctx.rotate(this.position.angle * Math.PI / 180);
         ctx.translate(-this.position.x, -this.position.y);
         ctx.strokeStyle = "#FFF";
+        ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(this.position.x-36, this.position.y+25);
         ctx.lineTo(this.position.x+36, this.position.y+25);
@@ -29,6 +31,7 @@ export class Ship extends Entity {
         ctx.rotate(-this.position.angle * Math.PI / 180);
         ctx.translate(-this.position.x, -this.position.y);
         ctx.strokeStyle = "#FF0000";
+        ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(this.position.x, this.position.y);
         ctx.lineTo(this.position.x + 50 * direction.x, this.position.y - 50 * direction.y);
