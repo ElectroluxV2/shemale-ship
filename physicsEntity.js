@@ -1,5 +1,5 @@
-import { Vector } from "./vector";
-import { Pos } from "./pos";
+import { Vector } from "./vector.js";
+import { Pos } from "./pos.js";
 
 export class PhysicsEntity {
     position;

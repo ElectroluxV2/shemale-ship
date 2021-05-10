@@ -37,6 +37,7 @@ export class PhysicsEngine {
         if (this.#ship.thrustPresent.accForward) {
             const angled = this.#ship.angledVector().multiply(Ship.thrustForward);
 
+            console.log(angled.x)
             this.accX += angled.x;
             this.accY += angled.y;
         }
@@ -47,6 +48,8 @@ export class PhysicsEngine {
             this.accX += angled.x;
             this.accY += angled.y;
         }
+
+        // console.log(this.#ship.position.x);
 
         // Calculate forces for ship
         this.#ship.position.x += this.#ship.accX;
@@ -66,7 +69,7 @@ export class PhysicsEngine {
         this.#physicsChannelPort.postMessage({
             type: "receivePhysicsResultForEntity",
             physicsData: physicsData
-        }, [physicsData]);
+        });
 
         requestAnimationFrame(this.mainLoop.bind(this));
     }

@@ -1,6 +1,5 @@
 import { PhysicsEngine } from "./physicsEngine.js";
 
-
 let physicsEngine = null;
 
 onmessage = ({data} = event) => {

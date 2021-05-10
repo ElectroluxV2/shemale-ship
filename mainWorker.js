@@ -19,8 +19,6 @@ OffscreenCanvasRenderingContext2D.prototype.reset = OffscreenCanvasRenderingCont
 
 onmessage = ({data} = event) => {
 
-    console.log(data);
-
     switch (data.type) {
         case "windowOnKeyDown":
             game.keyboardStates[data.key] = true;
