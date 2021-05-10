@@ -1,6 +1,23 @@
-const mainWorker = new Worker("main.js", {
+const mainWorker = new Worker("mainWorker.js", {
     type: "module"
 });
+
+const physicsWorker = new Worker("physicsWorker.js", {
+    type: "module"
+});
+
+const physicsChannel = new MessageChannel();
+
+physicsWorker.postMessage({
+    type: "physicsChannel",
+    physicsChannelPort: physicsChannel.port1
+}, [physicsChannel.port1]);
+
+mainWorker.postMessage({
+    type: "physicsChannel",
+    physicsChannelPort: physicsChannel.port2
+}, [physicsChannel.port2]);
+
 const canvas = document.getElementById("canvas").transferControlToOffscreen();
 
 mainWorker.postMessage({
@@ -33,3 +50,4 @@ window.onkeyup = event => mainWorker.postMessage({
 });
 
 // Etc. eg. PointerEvents
+

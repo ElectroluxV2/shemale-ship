@@ -7,10 +7,16 @@ export class Game {
     #ship;
     #canvas;
     #context;
+    #physicsChannelPort
 
-    constructor(offScreenCanvas) {
+    constructor(offScreenCanvas, physicsChannelPort) {
         this.#canvas = offScreenCanvas;
         this.#context = this.#canvas.getContext("2d");
+        this.#physicsChannelPort = physicsChannelPort;
+
+        this.#physicsChannelPort.onmessage = data => {
+            console.log(data);
+        };
 
         // Add main ship
         this.#ship = new Ship(new Pos(this.#canvas.width / 2, this.#canvas.height / 2, 45));
@@ -42,6 +48,7 @@ export class Game {
         }
 
         if (this.keyboardStates["W"] || this.keyboardStates["w"]) {
+            this.#physicsChannelPort.postMessage("W was pressed");
             // const direction = this.#ship.angledVector().multiply(1);
             // PhysicsEngine.accX(this.#ship, direction.x);
             // PhysicsEngine.accY(this.#ship, direction.y);

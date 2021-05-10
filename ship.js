@@ -6,6 +6,8 @@ export class Ship extends Entity {
     currAcc = 0;
     currAccAngular = 0;
     draw(ctx) {
+        ctx.lineWidth = 5;
+
         // center
         ctx.fillStyle = "#FF0000";
         ctx.fillRect(this.position.x-2, this.position.y-2, 4, 4);
