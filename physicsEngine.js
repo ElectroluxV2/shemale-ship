@@ -10,7 +10,6 @@ export class PhysicsEngine {
     constructor(physicsChannelPort) {
         this.#ship = new PhysicsEntity();
         this.#physicsChannelPort = physicsChannelPort;
-        this.#physicsChannelPort.postMessage("from PhysicsEngine");
         this.#physicsChannelPort.onmessage = ({data} = event) => {
             switch (data.type) {
             case "sendPhysicsDataForEntity":
@@ -27,26 +26,25 @@ export class PhysicsEngine {
 
     mainLoop() {
         if (this.#ship.thrustPresent.accLeft) {
-            this.accAngular -= Ship.thrustLeft;
+            this.#ship.accAngular += Ship.thrustLeft;
         }
 
         if (this.#ship.thrustPresent.accRight) {
-            this.accAngular += Ship.thrustRight;
+            this.#ship.accAngular -= Ship.thrustRight;
         }
 
         if (this.#ship.thrustPresent.accForward) {
             const angled = this.#ship.angledVector().multiply(Ship.thrustForward);
 
-            console.log(angled.x)
-            this.accX += angled.x;
-            this.accY += angled.y;
+            this.#ship.accX += angled.x;
+            this.#ship.accY += angled.y;
         }
 
         if (this.#ship.thrustPresent.accBackward) {
             const angled = this.#ship.angledVector().reverse().multiply(Ship.thrustBackward);
 
-            this.accX += angled.x;
-            this.accY += angled.y;
+            this.#ship.accX += angled.x;
+            this.#ship.accY += angled.y;
         }
 
         // console.log(this.#ship.position.x);
