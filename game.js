@@ -65,6 +65,10 @@ export class Game {
             physicsData: physicsData
         });
 
+        this.#physicsChannelPort.postMessage({
+            type: "loop",
+        });
+
         this.#ship.draw(this.#context);
         this.#context.resetTransform()
 

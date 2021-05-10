@@ -1,7 +1,7 @@
 import { GraphicEntity } from "./graphicEntity.js";
 
 export class Ship extends GraphicEntity {
-    static thrustLeft = 0.5;
+    static thrustLeft = 1.5;
     static thrustRight = Ship.thrustLeft;
     static thrustForward = 1;
     static thrustBackward = 0.8;

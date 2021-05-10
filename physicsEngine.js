@@ -18,6 +18,8 @@ export class PhysicsEngine {
                 this.#ship.position.angle = data.physicsData.angle;
                 this.#ship.thrustPresent = data.physicsData.thrustPresent;
                 break;
+                case "loop":
+                    this.mainLoop();
             }
         };
 
@@ -55,7 +57,7 @@ export class PhysicsEngine {
         this.#ship.position.y -= this.#ship.accY;
         this.#ship.accY *= PhysicsEngine.#resistance;
         this.#ship.position.angle += this.#ship.accAngular;
-        this.#ship.currAccAngular *= PhysicsEngine.#angularResistance;
+        this.#ship.accAngular *= PhysicsEngine.#angularResistance;
 
         // Here return calculations result
         const physicsData = {
@@ -69,6 +71,6 @@ export class PhysicsEngine {
             physicsData: physicsData
         });
 
-        requestAnimationFrame(this.mainLoop.bind(this));
+        // requestAnimationFrame(this.mainLoop.bind(this));
     }
 }
