@@ -1,6 +1,5 @@
 import { Ship } from "./ship.js";
 import { Pos } from "./pos.js";
-import { PhysicsEngine } from "./physics.js"
 
 export class Game {
     keyboardStates = new Map();
@@ -14,8 +13,14 @@ export class Game {
         this.#context = this.#canvas.getContext("2d");
         this.#physicsChannelPort = physicsChannelPort;
 
-        this.#physicsChannelPort.onmessage = data => {
-            console.log(data);
+        this.#physicsChannelPort.onmessage = ({data} = event) => {
+            switch (data.type) {
+                case "receivePhysicsResultForEntity":
+                    this.#ship.position.x = data.physicsData.x;
+                    this.#ship.position.y = data.physicsData.y;
+                    this.#ship.position.angle = data.physicsData.angle;
+                    break;
+            }
         };
 
         // Add main ship
@@ -31,35 +36,37 @@ export class Game {
         // Clear screen
         this.#context.reset();
 
+        let physicsData = {thrustPresent:{}};
+
         // Handle user input (In feature communicate with physic worker)
         if (this.keyboardStates["D"] || this.keyboardStates["d"]) {
-            PhysicsEngine.accRight(this.#ship, 0.5);
+            physicsData.thrustPresent.accLeft = true;
         }
 
         if (this.keyboardStates["A"] || this.keyboardStates["a"]) {
-            PhysicsEngine.accLeft(this.#ship, 0.5);
+            physicsData.thrustPresent.accRight = true;
         }
 
         if (this.keyboardStates["S"] || this.keyboardStates["s"]) {
-            // const direction = this.#ship.angledVector().reverse().multiply(1);
-            // PhysicsEngine.accX(this.#ship, direction.x);
-            // PhysicsEngine.accY(this.#ship, direction.y);
-            PhysicsEngine.acc(this.#ship, -1)
+            physicsData.thrustPresent.accBackward = true;
         }
 
         if (this.keyboardStates["W"] || this.keyboardStates["w"]) {
-            this.#physicsChannelPort.postMessage("W was pressed");
-            // const direction = this.#ship.angledVector().multiply(1);
-            // PhysicsEngine.accX(this.#ship, direction.x);
-            // PhysicsEngine.accY(this.#ship, direction.y);
-            PhysicsEngine.acc(this.#ship, 1)
+            physicsData.thrustPresent.accForward = true;
         }
 
-        PhysicsEngine.physicsLoop(this.#ship);
+        physicsData.x = this.#ship.position.x;
+        physicsData.y = this.#ship.position.y;
+        physicsData.angle = this.#ship.position.angle;
+
+        // PhysicsEngine.physicsLoop(this.#ship);
+        this.#physicsChannelPort.postMessage({
+            type: "sendPhysicsDataForEntity",
+            physicsData: physicsData
+        });
 
         this.#ship.draw(this.#context);
         this.#context.resetTransform()
-
 
         // Measure frame time
         const stop = performance.now()

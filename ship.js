@@ -1,10 +1,11 @@
-import { Entity } from "./entity.js";
+import { GraphicEntity } from "./graphicEntity.js";
 
-export class Ship extends Entity {
-    // currAccX = 0;
-    // currAccY = 0;
-    currAcc = 0;
-    currAccAngular = 0;
+export class Ship extends GraphicEntity {
+    static thrustLeft = 0.5;
+    static thrustRight = Ship.thrustLeft;
+    static thrustForward = 1;
+    static thrustBackward = 0.8;
+
     draw(ctx) {
         ctx.lineWidth = 5;
 
@@ -26,18 +27,15 @@ export class Ship extends Entity {
         ctx.stroke();
 
         // direction
-
-        const direction = this.angledVector();
-
-        ctx.translate(this.position.x, this.position.y);
-        ctx.rotate(-this.position.angle * Math.PI / 180);
-        ctx.translate(-this.position.x, -this.position.y);
-        ctx.strokeStyle = "#FF0000";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(this.position.x, this.position.y);
-        ctx.lineTo(this.position.x + 50 * direction.x, this.position.y - 50 * direction.y);
-        ctx.closePath();
-        ctx.stroke();
+        // ctx.translate(this.position.x, this.position.y);
+        // ctx.rotate(-this.position.angle * Math.PI / 180);
+        // ctx.translate(-this.position.x, -this.position.y);
+        // ctx.strokeStyle = "#FF0000";
+        // ctx.lineWidth = 1;
+        // ctx.beginPath();
+        // ctx.moveTo(this.position.x, this.position.y);
+        // ctx.lineTo(this.position.x + 50 * this.angledVector().x, this.position.y - 50 * this.angledVector().y);
+        // ctx.closePath();
+        // ctx.stroke();
     };
 }

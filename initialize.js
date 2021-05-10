@@ -6,6 +6,7 @@ const physicsWorker = new Worker("physicsWorker.js", {
     type: "module"
 });
 
+
 const physicsChannel = new MessageChannel();
 
 physicsWorker.postMessage({
