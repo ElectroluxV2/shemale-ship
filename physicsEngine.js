@@ -50,9 +50,9 @@ export class PhysicsEngine {
 
     /**
      * Generates random id
-     * @return {string}
+     * @return {number}
      */
     static #generateId() {
-        return Math.random().toString(36).substring(2, 15);
+        return performance.now();
     }
 }
