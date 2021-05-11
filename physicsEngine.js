@@ -2,7 +2,7 @@ import { PhysicsEntity } from "./physicsEntity.js";
 import { Ship } from "./ship.js";
 
 export class PhysicsEngine {
-    static #resistance = 0.97;
+    static #resistance = 0.95;
     static #angularResistance = 0.85;
     #physicsChannelPort;
     #ship;

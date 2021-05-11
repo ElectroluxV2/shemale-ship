@@ -1,18 +1,19 @@
 import { Ship } from "./ship.js";
 import { Pos } from "./pos.js";
+import { Rock } from "./rock.js";
 
 export class Game {
     keyboardStates = new Map();
     #ship;
     #canvas;
     #context;
-    #physicsChannelPort
+    #physicsChannelPort;
+    #rock;
 
     constructor(offScreenCanvas, physicsChannelPort) {
         this.#canvas = offScreenCanvas;
         this.#context = this.#canvas.getContext("2d");
         this.#physicsChannelPort = physicsChannelPort;
-
         this.#physicsChannelPort.onmessage = ({data} = event) => {
             switch (data.type) {
                 case "receivePhysicsResultForEntity":
@@ -25,7 +26,7 @@ export class Game {
 
         // Add main ship
         this.#ship = new Ship(new Pos(this.#canvas.width / 2, this.#canvas.height / 2, 45));
-
+        this.#rock = new Rock(new Pos(100, 200, 0));
         this.mainLoop();
     }
 
@@ -70,6 +71,8 @@ export class Game {
         });
 
         this.#ship.draw(this.#context);
+        this.#context.resetTransform()
+        this.#rock.draw(this.#context);
         this.#context.resetTransform()
 
         // Measure frame time
