@@ -1,30 +1,23 @@
-import { Ship } from "./ship.js";
-import { Pos } from "./pos.js";
+import { UserControlledShip } from "./userControlledShip.js";
+import { PhysicsEngine } from "./physicsEngine.js";
+import { Position } from "./position.js";
 
 export class Game {
     keyboardStates = new Map();
     #ship;
     #canvas;
     #context;
-    #physicsChannelPort
+    #physicsEngine;
 
-    constructor(offScreenCanvas, physicsChannelPort) {
+    constructor(offScreenCanvas) {
         this.#canvas = offScreenCanvas;
         this.#context = this.#canvas.getContext("2d");
-        this.#physicsChannelPort = physicsChannelPort;
-
-        this.#physicsChannelPort.onmessage = ({data} = event) => {
-            switch (data.type) {
-                case "receivePhysicsResultForEntity":
-                    this.#ship.position.x = data.physicsData.x;
-                    this.#ship.position.y = data.physicsData.y;
-                    this.#ship.position.angle = data.physicsData.angle;
-                    break;
-            }
-        };
 
         // Add main ship
-        this.#ship = new Ship(new Pos(this.#canvas.width / 2, this.#canvas.height / 2, 45));
+        this.#ship = new UserControlledShip(new Position(this.#canvas.width / 2, this.#canvas.height / 2, 45));
+
+        // Initialize physics engine
+        this.#physicsEngine = new PhysicsEngine();
 
         this.mainLoop();
     }
@@ -36,40 +29,27 @@ export class Game {
         // Clear screen
         this.#context.reset();
 
-        let physicsData = {thrustPresent:{}};
-
         // Handle user input (In feature communicate with physic worker)
         if (this.keyboardStates["D"] || this.keyboardStates["d"]) {
-            physicsData.thrustPresent.accLeft = true;
+            this.#ship.left();
         }
 
         if (this.keyboardStates["A"] || this.keyboardStates["a"]) {
-            physicsData.thrustPresent.accRight = true;
+            this.#ship.right();
         }
 
         if (this.keyboardStates["S"] || this.keyboardStates["s"]) {
-            physicsData.thrustPresent.accBackward = true;
+            this.#ship.backward();
         }
 
         if (this.keyboardStates["W"] || this.keyboardStates["w"]) {
-            physicsData.thrustPresent.accForward = true;
+            this.#ship.forward();
         }
 
-        physicsData.x = this.#ship.position.x;
-        physicsData.y = this.#ship.position.y;
-        physicsData.angle = this.#ship.position.angle;
-
-        // PhysicsEngine.physicsLoop(this.#ship);
-        this.#physicsChannelPort.postMessage({
-            type: "sendPhysicsDataForEntity",
-            physicsData: physicsData
-        });
-
-        this.#physicsChannelPort.postMessage({
-            type: "loop",
-        });
+        this.#physicsEngine.addTask(this.#ship);
 
         this.#ship.draw(this.#context);
+
         this.#context.resetTransform()
 
         // Measure frame time

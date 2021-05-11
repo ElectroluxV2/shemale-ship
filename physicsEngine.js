@@ -1,76 +1,58 @@
-import { PhysicsEntity } from "./physicsEntity.js";
-import { Ship } from "./ship.js";
-
 export class PhysicsEngine {
-    static #resistance = 0.97;
-    static #angularResistance = 0.85;
-    #physicsChannelPort;
-    #ship;
+    static resistance = 0.97;
+    static angularResistance = 0.85;
+    #workers = [];
+    #currentWorker = 0;
+    #tasks = new Map();
 
-    constructor(physicsChannelPort) {
-        this.#ship = new PhysicsEntity();
-        this.#physicsChannelPort = physicsChannelPort;
-        this.#physicsChannelPort.onmessage = ({data} = event) => {
-            switch (data.type) {
-            case "sendPhysicsDataForEntity":
-                this.#ship.position.x = data.physicsData.x;
-                this.#ship.position.y = data.physicsData.y;
-                this.#ship.position.angle = data.physicsData.angle;
-                this.#ship.thrustPresent = data.physicsData.thrustPresent;
-                break;
-                case "loop":
-                    this.mainLoop();
+    constructor(workerCount = navigator.hardwareConcurrency) {
+        for (let i = 0; i < workerCount; i++) {
+            const worker = new Worker("physicsWorker.js", {
+                type: "module"
+            });
+
+            worker.onmessage = ({data} = event) => {
+                const callback = this.#tasks.get(data.taskId);
+                this.#tasks.delete(data.taskId);
+                callback(data.physicsData);
             }
-        };
 
-        this.mainLoop();
+            this.#workers.push(worker);
+        }
     }
 
-    mainLoop() {
-        if (this.#ship.thrustPresent.accLeft) {
-            this.#ship.accAngular += Ship.thrustLeft;
-        }
+    /**
+     *
+     * @param entity
+     * @param callback
+     */
+    addTask(entity) {
+        const taskId = PhysicsEngine.#generateId();
 
-        if (this.#ship.thrustPresent.accRight) {
-            this.#ship.accAngular -= Ship.thrustRight;
-        }
-
-        if (this.#ship.thrustPresent.accForward) {
-            const angled = this.#ship.angledVector().multiply(Ship.thrustForward);
-
-            this.#ship.accX += angled.x;
-            this.#ship.accY += angled.y;
-        }
-
-        if (this.#ship.thrustPresent.accBackward) {
-            const angled = this.#ship.angledVector().reverse().multiply(Ship.thrustBackward);
-
-            this.#ship.accX += angled.x;
-            this.#ship.accY += angled.y;
-        }
-
-        // console.log(this.#ship.position.x);
-
-        // Calculate forces for ship
-        this.#ship.position.x += this.#ship.accX;
-        this.#ship.accX *= PhysicsEngine.#resistance;
-        this.#ship.position.y -= this.#ship.accY;
-        this.#ship.accY *= PhysicsEngine.#resistance;
-        this.#ship.position.angle += this.#ship.accAngular;
-        this.#ship.accAngular *= PhysicsEngine.#angularResistance;
-
-        // Here return calculations result
-        const physicsData = {
-            x: this.#ship.position.x,
-            y: this.#ship.position.y,
-            angle: this.#ship.position.angle,
-        };
-
-        this.#physicsChannelPort.postMessage({
-            type: "receivePhysicsResultForEntity",
-            physicsData: physicsData
+        this.#tasks.set(taskId, exportedPhysicsData => {
+            entity.physicsData.import(exportedPhysicsData);
         });
 
-        // requestAnimationFrame(this.mainLoop.bind(this));
+        this.#getWorker().postMessage({
+            taskId: taskId,
+            physicsData: entity.physicsData.export()
+        });
+    }
+
+    /**
+     * Selects worker
+     * @return {Worker}
+     */
+    #getWorker() {
+        this.#currentWorker = ++this.#currentWorker % navigator.hardwareConcurrency;
+        return this.#workers[this.#currentWorker];
+    }
+
+    /**
+     * Generates random id
+     * @return {string}
+     */
+    static #generateId() {
+        return Math.random().toString(36).substring(2, 15);
     }
 }

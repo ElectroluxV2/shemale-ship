@@ -1,7 +1,6 @@
 import { Game } from "./game.js";
 
 let game = null;
-let physicsChannelPort = null;
 let canvas = null;
 
 OffscreenCanvasRenderingContext2D.prototype.reset = OffscreenCanvasRenderingContext2D.prototype.reset || function (preserveTransform) {
@@ -33,9 +32,6 @@ onmessage = ({data} = event) => {
             canvas.width = data.windowInnerWidth * data.windowDevicePixelRatio;
             canvas.getContext("2d").scale(data.windowDevicePixelRatio, data.windowDevicePixelRatio);
             break;
-        case "physicsChannel":
-            physicsChannelPort = data.physicsChannelPort;
-            break;
         case "transferCanvas":
             canvas = data.canvas;
 
@@ -45,7 +41,7 @@ onmessage = ({data} = event) => {
             canvas.getContext("2d").scale(data.windowDevicePixelRatio, data.windowDevicePixelRatio);
 
             // Crate new object only when canvas is present
-            game = new Game(canvas, physicsChannelPort);
+            game = new Game(canvas);
             break;
     }
 };
