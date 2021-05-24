@@ -42,6 +42,6 @@ export class Rock extends GraphicEntity {
         }
         ctx.closePath();
         ctx.stroke();
-
+        ctx.resetTransform();
     }
 }

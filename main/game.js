@@ -26,7 +26,7 @@ export class Game {
     i = 0;
     mainLoop() {
         this.#mainCanvasContext.reset();
-        this.#mainCanvasContext.resetTransform();
+        // this.#mainCanvasContext.resetTransform();
 
         if (this.keyboardStates['w'] || this.keyboardStates['W']) {
             this.#physicsChannel.postMessage({
@@ -54,6 +54,14 @@ export class Game {
 
         new Rock(new Position(500, 500, 40.3)).draw(this.#mainCanvasContext);
         this.#userControlledShip.draw(this.#mainCanvasContext);
+
+        // Print ship position
+        this.#mainCanvasContext.fillStyle = "#a0937d";
+        this.#mainCanvasContext.font = "bold 16px Arial";
+        const text = `${this.#userControlledShip.position.x.toFixed(2)} x, ${this.#userControlledShip.position.y.toFixed(2)} y, angle: ${this.#userControlledShip.position.angle.toFixed(2)}`;
+        const textSize = this.#mainCanvasContext.measureText(text);
+        this.#mainCanvasContext.fillText(text, this.#mainCanvas.width - textSize.width, textSize.fontBoundingBoxAscent);
+        // this.#mainCanvasContext.resetTransform();
 
         //if (this.i++ < 50)
         requestAnimationFrame(this.mainLoop.bind(this));

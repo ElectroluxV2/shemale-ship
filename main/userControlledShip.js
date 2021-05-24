@@ -13,7 +13,7 @@ export class UserControlledShip extends GraphicEntity {
 
         // body
         ctx.strokeStyle = "#FFF";
-        ctx.lineWidth = 5;
+        ctx.lineWidth = 4;
         ctx.translate(this.position.x, this.position.y);
         ctx.rotate(this.position.radians);
         ctx.translate(-this.position.x, -this.position.y);
@@ -24,5 +24,6 @@ export class UserControlledShip extends GraphicEntity {
         ctx.lineTo(this.position.x, this.position.y - 65);
         ctx.closePath();
         ctx.stroke();
+        ctx.resetTransform();
     }
 }
