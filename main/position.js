@@ -9,7 +9,7 @@ export class Position {
         this.angle = angle;
     }
 
-    get radians(){
+    get radians() {
         return this.angle * Math.PI / 180;
     }
 }

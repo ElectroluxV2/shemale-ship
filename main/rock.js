@@ -17,30 +17,31 @@ export class Rock extends GraphicEntity {
             return -1;
         } else return 1;
     }
-    /*
+
     draw(ctx) {
         //center
 
         ctx.fillStyle = "#FF0000";
-        ctx.fillRect(this.#position.x - 2, this.#position.y - 2, 4, 4);
+
+        ctx.fillRect(this.position.x - 2, this.position.y - 2, 4, 4);
 
         // body
-
-        ctx.translate(this.#position.x, this.#position.y);
-        ctx.rotate(this.#position.angle * Math.PI / 180);
-        ctx.translate(-this.#position.x, -this.#position.y);
+        ctx.strokeStyle = '#FFF'
         ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(this.#position.x + this.#size * Math.cos(0), this.#position.y - this.#size * Math.sin(0));
-        ctx.lineTo(this.#position.x + this.#size * Math.cos(0), this.#position.y - this.#size * Math.sin(0));
+        ctx.translate(this.position.x, this.position.y);
+        ctx.rotate(this.position.angle * Math.PI / 180);
+        ctx.translate(-this.position.x, -this.position.y);
 
+        ctx.beginPath();
+        ctx.moveTo(this.position.x + this.#size * Math.cos(0), this.position.y - this.#size * Math.sin(0));
+        ctx.lineTo(this.position.x + this.#size * Math.cos(0), this.position.y - this.#size * Math.sin(0));
         for(let i = 1; i < this.#sides; i++){
-            let tempX = this.#size * Math.cos((2 * Math.PI * i ) / this.#sides) + this.#position.x;
-            let tempY = this.#size * Math.sin((2 * Math.PI * i ) / this.#sides) + this.#position.y;
+            let tempX = this.#size * Math.cos((2 * Math.PI * i ) / this.#sides) + this.position.x;
+            let tempY = this.#size * Math.sin((2 * Math.PI * i ) / this.#sides) + this.position.y;
             ctx.lineTo(tempX, tempY);
         }
         ctx.closePath();
         ctx.stroke();
 
-    }*/
+    }
 }

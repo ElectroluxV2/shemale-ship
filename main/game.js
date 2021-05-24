@@ -1,9 +1,10 @@
 import { Rock } from './rock.js';
 import { Position } from './position.js';
+import { UserControlledShip } from './userControlledShip.js';
 
 export class Game {
     keyboardStates = new Map();
-    #userControlledShip;
+    #userControlledShip = new UserControlledShip(new Position(200, 300));
     #mainCanvas;
     #mainCanvasContext;
     #physicsChannel;
@@ -16,24 +17,17 @@ export class Game {
             console.log(data);
         };
 
-        // New Ship();
         this.mainLoop();
     }
 
     mainLoop() {
         this.#mainCanvasContext.reset();
+        this.#mainCanvasContext.resetTransform();
 
-        this.#mainCanvasContext.strokeStyle = 'Red';
-        this.#mainCanvasContext.lineWidth = 5;
-        this.#mainCanvasContext.beginPath();
-        this.#mainCanvasContext.moveTo(10, 10);
-        this.#mainCanvasContext.lineTo(200, 200);
-        this.#mainCanvasContext.stroke();
+        new Rock(new Position(500, 500, 40.3)).draw(this.#mainCanvasContext);
+        this.#userControlledShip.draw(this.#mainCanvasContext);
 
 
-        // new Rock(new Position(200, 200, 40.3)).draw(this.#mainCanvasContext);
-
-
-        requestAnimationFrame(this.mainLoop.bind(this));
+        // requestAnimationFrame(this.mainLoop.bind(this));
     }
 }
