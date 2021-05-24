@@ -15,13 +15,23 @@ export class PhysicsEngine {
         this.#physicsCanvasContext = this.#physicsCanvas.getContext("2d");
         this.#physicsChannel = physicsChannel;
         this.#physicsChannel.onmessage = ({data} = event) => {
-            switch (data.type) {
-                case 'userControlledShipMoveW':
-                    // NADAWANIE ACC
-                    const angled = this.#userControlledShip.angledVector().multiply(UserControlledShip.thrustForward);
-                    this.#userControlledShip.accX += angled.x;
-                    this.#userControlledShip.accY += angled.y;
-                    break;
+
+            if (data.type === 'userControlledShipMoveW') {
+                const angled = this.#userControlledShip.angledVector().multiply(UserControlledShip.thrustForward);
+                this.#userControlledShip.currAccX += angled.x;
+                this.#userControlledShip.currAccY += angled.y;
+
+            } else if (data.type === 'userControlledShipMoveS') {
+                const angled = this.#userControlledShip.angledVector().reverse().multiply(UserControlledShip.thrustBackward);
+                this.#userControlledShip.currAccX += angled.x;
+                this.#userControlledShip.currAccY += angled.y;
+
+            } else if (data.type === 'userControlledShipMoveA') {
+                this.#userControlledShip.currAccAngular -= UserControlledShip.thrustLeft;
+
+            } else if (data.type === 'userControlledShipMoveD') {
+                this.#userControlledShip.currAccAngular += UserControlledShip.thrustRight;
+
             }
         };
 
@@ -42,7 +52,7 @@ export class PhysicsEngine {
         this.#userControlledShip.position.angle += this.#userControlledShip.currAccAngular;
         this.#userControlledShip.currAccAngular *= PhysicsEngine.#angularResistance;
 
-        console.log(this.#userControlledShip.position);
+       // console.log(this.#userControlledShip.position);
 
         // Wysyłamy
         this.#physicsChannel.postMessage({
@@ -50,6 +60,7 @@ export class PhysicsEngine {
             position: this.#userControlledShip.position
         });
 
-        if (this.i++ < 10) requestAnimationFrame(this.mainLoop.bind(this));
+        //if (this.i++ < 50)
+        requestAnimationFrame(this.mainLoop.bind(this));
     }
 }

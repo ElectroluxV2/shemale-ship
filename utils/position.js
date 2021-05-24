@@ -9,6 +9,12 @@ export class Position {
         this.angle = angle;
     }
 
+    import({x, y, angle}) {
+        this.x = x;
+        this.y = y;
+        this.angle = angle;
+    }
+
     get radians() {
         return this.angle * Math.PI / 180;
     }

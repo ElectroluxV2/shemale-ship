@@ -15,7 +15,7 @@ export class UserControlledShip extends GraphicEntity {
         ctx.strokeStyle = "#FFF";
         ctx.lineWidth = 5;
         ctx.translate(this.position.x, this.position.y);
-        ctx.rotate(this.angle * Math.PI / 180);
+        ctx.rotate(this.position.radians);
         ctx.translate(-this.position.x, -this.position.y);
 
         ctx.beginPath();

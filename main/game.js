@@ -16,23 +16,23 @@ export class Game {
         this.#physicsChannel.onmessage = ({data} = event) => {
             switch (data.type) {
                 case 'latestUserControlledShipPosition':
-                    this.#userControlledShip.position = data.position;
+                    this.#userControlledShip.position.import(data.position);
                     break;
             }
         };
 
         this.mainLoop();
     }
-
+    i = 0;
     mainLoop() {
         this.#mainCanvasContext.reset();
         this.#mainCanvasContext.resetTransform();
 
-       // if (this.keyboardStates['w'] || this.keyboardStates['W']) {
+        if (this.keyboardStates['w'] || this.keyboardStates['W']) {
             this.#physicsChannel.postMessage({
                 type: 'userControlledShipMoveW'
             });
-       // }
+        }
 
         if (this.keyboardStates['s'] || this.keyboardStates['S']) {
             this.#physicsChannel.postMessage({
@@ -55,7 +55,7 @@ export class Game {
         new Rock(new Position(500, 500, 40.3)).draw(this.#mainCanvasContext);
         this.#userControlledShip.draw(this.#mainCanvasContext);
 
-
+        //if (this.i++ < 50)
         requestAnimationFrame(this.mainLoop.bind(this));
     }
 }
