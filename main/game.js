@@ -1,15 +1,15 @@
 export class Game {
     keyboardStates = new Map();
     #userControlledShip;
-    #canvas;
-    #context;
-    #physicsChannelPort;
+    #mainCanvas;
+    #mainCanvasContext;
+    #physicsChannel;
 
-    constructor(offScreenCanvas, physicsChannelPort) {
-        this.#canvas = offScreenCanvas;
-        this.#context = this.#canvas.getContext("2d");
-        this.#physicsChannelPort = physicsChannelPort;
-        this.#physicsChannelPort.onmessage = ({data} = event) => {
+    constructor(mainCanvas, physicsChannel) {
+        this.#mainCanvas = mainCanvas;
+        this.#mainCanvasContext = this.#mainCanvas.getContext('2d');
+        this.#physicsChannel = physicsChannel;
+        this.#physicsChannel.onmessage = ({data} = event) => {
             console.log(data);
         };
 
@@ -18,6 +18,14 @@ export class Game {
     }
 
     mainLoop() {
+        this.#mainCanvasContext.reset();
+
+        this.#mainCanvasContext.strokeStyle = 'Red';
+        this.#mainCanvasContext.lineWidth = 5;
+        this.#mainCanvasContext.beginPath();
+        this.#mainCanvasContext.moveTo(10, 10);
+        this.#mainCanvasContext.lineTo(200, 200);
+        this.#mainCanvasContext.stroke();
 
 
         requestAnimationFrame(this.mainLoop.bind(this));

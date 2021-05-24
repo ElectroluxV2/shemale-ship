@@ -16,8 +16,8 @@ OffscreenCanvasRenderingContext2D.prototype.reset = OffscreenCanvasRenderingCont
 
 // Main Worker variables received from browsers main thread
 let game = null;
-let physicsChannelPort = null;
-let canvas = null;
+let physicsChannel = null;
+let mainCanvas = null;
 
 onmessage = ({data} = event) => {
     switch (data.type) {
@@ -30,24 +30,25 @@ onmessage = ({data} = event) => {
         case "windowOnResize":
 
             // Adjust to new dimensions
-            canvas.height = data.windowInnerHeight * data.windowDevicePixelRatio;
-            canvas.width = data.windowInnerWidth * data.windowDevicePixelRatio;
-            canvas.getContext("2d").scale(data.windowDevicePixelRatio, data.windowDevicePixelRatio);
+            mainCanvas.height = data.windowInnerHeight * data.windowDevicePixelRatio;
+            mainCanvas.width = data.windowInnerWidth * data.windowDevicePixelRatio;
+            mainCanvas.getContext("2d").scale(data.windowDevicePixelRatio, data.windowDevicePixelRatio);
             break;
         case "physicsChannel":
-            physicsChannelPort = data.physicsChannelPort;
-            console.log(physicsChannelPort);
+            physicsChannel = data.physicsChannel;
             break;
         case "transferCanvas":
-            canvas = data.canvas;
+            mainCanvas = data.canvas;
 
             // Adjust to screen
-            canvas.height = data.windowInnerHeight * data.windowDevicePixelRatio;
-            canvas.width = data.windowInnerWidth * data.windowDevicePixelRatio;
-            canvas.getContext("2d").scale(data.windowDevicePixelRatio, data.windowDevicePixelRatio);
+            mainCanvas.height = data.windowInnerHeight * data.windowDevicePixelRatio;
+            mainCanvas.width = data.windowInnerWidth * data.windowDevicePixelRatio;
+            mainCanvas.getContext("2d").scale(data.windowDevicePixelRatio, data.windowDevicePixelRatio);
 
             // Crate new object only when canvas is present
-            game = new Game(canvas, physicsChannelPort);
+            game = new Game(mainCanvas, physicsChannel);
             break;
+        default:
+            console.warn(`Undefined data type "${data.type}"`, data);
     }
 }

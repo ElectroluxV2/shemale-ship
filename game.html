@@ -9,20 +9,22 @@
             margin: 0;
             padding: 0;
             height: 100%;
+            background-color: #000;
         }
         canvas {
-            height: 100vh;
-            width: 100vw;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: block;
-            background-color: #000;
         }
     </style>
 </head>
 <body>
 
-<canvas id="canvas">
-
-</canvas>
+<canvas id="mainCanvas"></canvas>
+<canvas id="physicsCanvas"></canvas>
 
 </body>
 </html>
