@@ -1,4 +1,4 @@
-import { Position } from './position.js';
+import { Position } from '../utils/position.js';
 export class GraphicEntity {
     #id;
     position;
