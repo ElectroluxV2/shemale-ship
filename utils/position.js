@@ -12,7 +12,7 @@ export class Position {
     import({x, y, angle}) {
         this.x = x;
         this.y = y;
-        this.angle = angle % 360;
+        this.angle = angle;
     }
 
     export() {
