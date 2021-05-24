@@ -1,3 +1,6 @@
+import { Rock } from './rock.js';
+import { Position } from './position.js';
+
 export class Game {
     keyboardStates = new Map();
     #userControlledShip;
@@ -26,6 +29,9 @@ export class Game {
         this.#mainCanvasContext.moveTo(10, 10);
         this.#mainCanvasContext.lineTo(200, 200);
         this.#mainCanvasContext.stroke();
+
+
+        // new Rock(new Position(200, 200, 40.3)).draw(this.#mainCanvasContext);
 
 
         requestAnimationFrame(this.mainLoop.bind(this));

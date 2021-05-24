@@ -1,4 +1,4 @@
-import { Game } from "./game.js";
+import { Game } from './game.js';
 
 // Polyfill for canvas.context.reset();
 OffscreenCanvasRenderingContext2D.prototype.reset = OffscreenCanvasRenderingContext2D.prototype.reset || function (preserveTransform) {
