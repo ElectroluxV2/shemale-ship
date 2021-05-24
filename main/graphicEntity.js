@@ -1,10 +1,14 @@
 import { Position } from '../utils/position.js';
 export class GraphicEntity {
     #id;
-    position;
+    #position;
 
     constructor(position = new Position(), id = performance.now()) {
         this.#id = id;
-        this.position = position;
+        this.#position = position;
+    }
+
+    get position() {
+        return this.#position;
     }
 }

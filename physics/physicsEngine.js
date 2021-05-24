@@ -39,7 +39,6 @@ export class PhysicsEngine {
     }
 
     i = 0;
-
     mainLoop() {
         this.#physicsCanvasContext.reset();
 
@@ -57,7 +56,7 @@ export class PhysicsEngine {
         // Wysyłamy
         this.#physicsChannel.postMessage({
             type: 'latestUserControlledShipPosition',
-            position: this.#userControlledShip.position
+            position: this.#userControlledShip.position.export()
         });
 
         //if (this.i++ < 50)
