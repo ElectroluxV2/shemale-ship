@@ -1,13 +1,14 @@
-const mainWorker = new Worker("mainWorker.js", {
+// Prepare all Workers
+const mainWorker = new Worker("main/mainWorker.js", {
     type: "module"
 });
 
-const physicsWorker = new Worker("physicsWorker.js", {
+const physicsWorker = new Worker("physics/physicsWorker.js", {
     type: "module"
 });
 
+// Prepare communication channels between Workers
 const physicsChannel = new MessageChannel();
-
 physicsWorker.postMessage({
     type: "physicsChannel",
     physicsChannelPort: physicsChannel.port1
@@ -18,6 +19,7 @@ mainWorker.postMessage({
     physicsChannelPort: physicsChannel.port2
 }, [physicsChannel.port2]);
 
+// Prepare canvas for moving to background Worker
 const canvas = document.getElementById("canvas").transferControlToOffscreen();
 
 mainWorker.postMessage({
@@ -28,10 +30,6 @@ mainWorker.postMessage({
     windowDevicePixelRatio: window.devicePixelRatio
 }, [canvas]);
 
-mainWorker.onmessage = message => {
-    console.log(message);
-};
-
 window.onresize = event => mainWorker.postMessage({
     type: "windowOnResize",
     windowInnerHeight: window.innerHeight,
@@ -39,10 +37,12 @@ window.onresize = event => mainWorker.postMessage({
     windowDevicePixelRatio: window.devicePixelRatio
 });
 
-window.onkeydown = event => { mainWorker.postMessage({
-    type: "windowOnKeyDown",
-    key: event.key
-})};
+window.onkeydown = event => {
+    mainWorker.postMessage({
+        type: "windowOnKeyDown",
+        key: event.key
+    })
+};
 
 window.onkeyup = event => mainWorker.postMessage({
     type: "windowOnKeyUp",
