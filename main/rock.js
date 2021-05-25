@@ -1,21 +1,15 @@
 import { GraphicEntity } from './graphicEntity.js';
+import { Random } from '../utils/random.js';
+import { Position } from '../utils/position.js';
 
 export class Rock extends GraphicEntity {
-    #sides = 6;
+    #sides;
     #size = 50;
 
-    set sides(value) {
-        this.#sides = value;
-    }
-
-    get sides() {
-        return this.#sides;
-    }
-
-    sign(x) {
-        if (x % 2 === 0) {
-            return -1;
-        } else return 1;
+    constructor(position = new Position(), id = performance.now()) {
+        super(position, id);
+        this.#sides = (Math.random() * 10 % 8) + 5;
+        this.#size = this.#sides * 10;
     }
 
     draw(ctx) {
@@ -35,9 +29,17 @@ export class Rock extends GraphicEntity {
         ctx.beginPath();
         ctx.moveTo(this.position.x + this.#size * Math.cos(0), this.position.y - this.#size * Math.sin(0));
         ctx.lineTo(this.position.x + this.#size * Math.cos(0), this.position.y - this.#size * Math.sin(0));
-        for(let i = 1; i < this.#sides; i++){
-            let tempX = this.#size * Math.cos((2 * Math.PI * i ) / this.#sides) + this.position.x;
-            let tempY = this.#size * Math.sin((2 * Math.PI * i ) / this.#sides) + this.position.y;
+
+        let randFactor = 0;
+        let sum = 0;
+        const rng = Random.getSeededRandom(this.id);
+
+        for (let i = 1; i < this.#sides - 1; i++) {
+            randFactor = ((Math.floor(rng() * 100) % 10) + 5);
+            if (sum + 360 / this.#sides + randFactor > 360) break;
+            sum +=  360 / this.#sides + randFactor;
+            let tempX = this.#size * Math.cos(sum * Math.PI / 180) + this.position.x;
+            let tempY = this.#size * Math.sin(sum * Math.PI / 180) + this.position.y;
             ctx.lineTo(tempX, tempY);
         }
         ctx.closePath();
