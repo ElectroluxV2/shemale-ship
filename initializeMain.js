@@ -18,7 +18,6 @@ const physicsWorkerToMainWorkerChannel = new MessageChannel();
 const mainCanvas = document.getElementById('mainCanvas').transferControlToOffscreen();
 const physicsCanvas = document.getElementById('physicsCanvas').transferControlToOffscreen();
 
-
 // Run constructor inside workers
 mainWorker.postMessage({
     type: 'constructor',
@@ -37,7 +36,7 @@ physicsWorker.postMessage({
 // Forward window events
 window.onresize = event => {
     const message = {
-        type: "windowOnResize",
+        type: 'windowOnResize',
         window: Polyfills.createWindow()
     };
 
@@ -47,12 +46,12 @@ window.onresize = event => {
 
 // Keyboard events
 window.onkeydown = event => mainWorker.postMessage({
-    type: "windowOnKeyDown",
+    type: 'windowOnKeyDown',
     key: event.key
 });
 
 window.onkeyup = event => mainWorker.postMessage({
-    type: "windowOnKeyUp",
+    type: 'windowOnKeyUp',
     key: event.key
 });
 

@@ -55,8 +55,8 @@ export class Game {
         this.#userControlledShip.draw(this.#mainCanvasContext);
 
         // Print ship position
-        this.#mainCanvasContext.fillStyle = "#a0937d";
-        this.#mainCanvasContext.font = "bold 16px Arial";
+        this.#mainCanvasContext.fillStyle = '#a0937d';
+        this.#mainCanvasContext.font = 'bold 16px Arial';
         //console.log(this.#userControlledShip.position);
 
         if (this.#userControlledShip.position instanceof Position) {

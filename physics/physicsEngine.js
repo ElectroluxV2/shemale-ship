@@ -12,7 +12,7 @@ export class PhysicsEngine {
 
     constructor(physicsCanvas, physicsChannel) {
         this.#physicsCanvas = physicsCanvas;
-        this.#physicsCanvasContext = this.#physicsCanvas.getContext("2d");
+        this.#physicsCanvasContext = this.#physicsCanvas.getContext('2d');
         this.#physicsChannel = physicsChannel;
         this.#physicsChannel.onmessage = ({data} = event) => {
 

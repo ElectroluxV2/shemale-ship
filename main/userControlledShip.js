@@ -8,11 +8,11 @@ export class UserControlledShip extends GraphicEntity {
 
     draw(ctx){
         // center
-        ctx.fillStyle = "#FF0000";
+        ctx.fillStyle = '#FF0000';
         ctx.fillRect(this.position.x - 2, this.position.y - 2, 4, 4);
 
         // body
-        ctx.strokeStyle = "#FFF";
+        ctx.strokeStyle = '#FFF';
         ctx.lineWidth = 4;
         ctx.translate(this.position.x, this.position.y);
         ctx.rotate(this.position.radians);
