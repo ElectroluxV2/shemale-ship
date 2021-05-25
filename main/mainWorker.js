@@ -19,7 +19,7 @@ const workerContext = {
         // Adjust to new dimensions
         workerContext.mainCanvas.height = window.innerHeight * window.devicePixelRatio;
         workerContext.mainCanvas.width = window.innerWidth * window.devicePixelRatio;
-        workerContext.mainCanvas.getContext("2d").scale(window.devicePixelRatio, window.devicePixelRatio);
+        workerContext.mainCanvas.getContext('2d').scale(window.devicePixelRatio, window.devicePixelRatio);
     }
 };
 

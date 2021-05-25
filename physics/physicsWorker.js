@@ -13,7 +13,7 @@ const workerContext = {
         // Adjust to new dimensions
         workerContext.physicsCanvas.height = window.innerHeight * window.devicePixelRatio;
         workerContext.physicsCanvas.width = window.innerWidth * window.devicePixelRatio;
-        workerContext.physicsCanvas.getContext("2d").scale(window.devicePixelRatio, window.devicePixelRatio);
+        workerContext.physicsCanvas.getContext('2d').scale(window.devicePixelRatio, window.devicePixelRatio);
     }
 };
 

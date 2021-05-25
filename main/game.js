@@ -23,7 +23,7 @@ export class Game {
 
         this.mainLoop();
     }
-    i = 0;
+
     mainLoop() {
         this.#mainCanvasContext.reset();
 
@@ -55,9 +55,8 @@ export class Game {
         this.#userControlledShip.draw(this.#mainCanvasContext);
 
         // Print ship position
-        this.#mainCanvasContext.fillStyle = "#a0937d";
-        this.#mainCanvasContext.font = "bold 16px Arial";
-        //console.log(this.#userControlledShip.position);
+        this.#mainCanvasContext.fillStyle = '#a0937d';
+        this.#mainCanvasContext.font = 'bold 16px Arial';
 
         if (this.#userControlledShip.position instanceof Position) {
             const text = `${this.#userControlledShip.position.x.toFixed(2)} x, ${this.#userControlledShip.position.y.toFixed(2)} y, angle: ${this.#userControlledShip.position.angle.toFixed(2)}`;
@@ -65,10 +64,6 @@ export class Game {
             this.#mainCanvasContext.fillText(text, this.#mainCanvas.width - textSize.width, textSize.fontBoundingBoxAscent);
         }
 
-
-        //console.log(this.#userControlledShip);
-
-        //if (++this.i < 0)
         requestAnimationFrame(this.mainLoop.bind(this));
     }
 }

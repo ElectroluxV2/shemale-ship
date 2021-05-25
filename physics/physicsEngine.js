@@ -12,7 +12,7 @@ export class PhysicsEngine {
 
     constructor(physicsCanvas, physicsChannel) {
         this.#physicsCanvas = physicsCanvas;
-        this.#physicsCanvasContext = this.#physicsCanvas.getContext("2d");
+        this.#physicsCanvasContext = this.#physicsCanvas.getContext('2d');
         this.#physicsChannel = physicsChannel;
         this.#physicsChannel.onmessage = ({data} = event) => {
 
@@ -38,11 +38,9 @@ export class PhysicsEngine {
         this.mainLoop();
     }
 
-    i = 0;
     mainLoop() {
         this.#physicsCanvasContext.reset();
 
-        // TUUUUUUUUU
         // Calculate forces for ship
         this.#userControlledShip.position.x += this.#userControlledShip.currAccX;
         this.#userControlledShip.currAccX *= PhysicsEngine.#resistance;
@@ -51,15 +49,12 @@ export class PhysicsEngine {
         this.#userControlledShip.position.angle += this.#userControlledShip.currAccAngular;
         this.#userControlledShip.currAccAngular *= PhysicsEngine.#angularResistance;
 
-       // console.log(this.#userControlledShip.position);
-
-        // Wysyłamy
+        // Send result
         this.#physicsChannel.postMessage({
             type: 'latestUserControlledShipPosition',
             position: this.#userControlledShip.position.export()
         });
 
-        //if (this.i++ < 50)
         requestAnimationFrame(this.mainLoop.bind(this));
     }
 }
