@@ -1,10 +1,13 @@
 import { PhysicsEntity } from './physicsEntity.js';
 import { Position } from '../utils/position.js';
 import { UserControlledShip } from '../main/userControlledShip.js';
+import { Vector } from '../utils/vector.js';
+import { Random } from '../utils/random.js';
 
 export class PhysicsEngine {
     static #resistance = 0.95;
     static #angularResistance = 0.85;
+    #rocks = new Map();
     #physicsCanvas;
     #physicsCanvasContext;
     #physicsChannel;
@@ -54,10 +57,43 @@ export class PhysicsEngine {
         });
     }
 
+    newRockCreated({id, position, mass}) {
+        const rock = new PhysicsEntity(id);
+        rock.position.import(position);
+        rock.mass = mass;
+        this.#rocks.set(id, rock);
+
+        const RNG = Random.getSeededRandom(id);
+        const randAngle = Math.floor( RNG() * 400 % 330 + 30);
+        const angled = Vector.j.multiply(Math.cos(randAngle * Math.PI / 180)).add(Vector.i.multiply(Math.sin(randAngle * Math.PI / 180))).multiply(60/mass);
+
+        rock.currAccX = angled.x;
+        rock.currAccY = angled.y;
+        rock.currAccAngular =  randAngle / 100 * (50 / rock.mass);
+
+    }
+
+    updateRocks() {
+        for (const rock of this.#rocks.values()) {
+
+            rock.position.x += rock.currAccX;
+            rock.position.y -= rock.currAccY;
+            rock.position.angle += rock.currAccAngular;
+
+
+            this.#physicsChannel.postMessage({
+                type: 'updateEntityPosition',
+                id: rock.id,
+                position: rock.position.export()
+            })
+        }
+    }
+
     mainLoop() {
         this.#physicsCanvasContext.reset();
 
         this.updateUserControlledShip();
+        this.updateRocks();
 
         // setTimeout(this.mainLoop.bind(this), 200);
         requestAnimationFrame(this.mainLoop.bind(this));

@@ -7,7 +7,7 @@ const workerContext = {
     constructor: ({canvas, window, physicsWorkerToMainWorkerChannel}) => {
         workerContext.mainCanvas = canvas;
         workerContext.windowOnResize({window});
-        workerContext.game = new Game(workerContext.mainCanvas, physicsWorkerToMainWorkerChannel);
+        workerContext.game = new Game(workerContext.mainCanvas, window, physicsWorkerToMainWorkerChannel);
     },
     windowOnKeyDown: ({key}) => {
         workerContext.game.keyboardStates[key] = true;

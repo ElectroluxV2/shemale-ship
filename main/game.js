@@ -9,16 +9,18 @@ export class Game {
     #mainCanvas;
     #mainCanvasContext;
     #physicsChannel;
+    #window
 
-    constructor(mainCanvas, physicsChannel) {
+    constructor(mainCanvas, window, physicsChannel) {
         this.#mainCanvas = mainCanvas;
+        this.#window = window;
         this.#mainCanvasContext = this.#mainCanvas.getContext('2d');
         this.#physicsChannel = physicsChannel;
         this.#physicsChannel.onmessage = ({data} = event) => this[data.type](data);
 
-        const rock = new Rock(new Position(500, 500, 40.3));
-        this.entities.set(rock.id, rock);
-
+        for (let i= 0; i<10; i++){
+            this.createRock();
+        }
         this.mainLoop();
     }
 
@@ -27,7 +29,20 @@ export class Game {
     }
 
     updateEntityPosition({id, position}) {
+        // console.log(position)
+        // console.log(id)
         this.entities.get(id)?.position.import(position);
+    }
+
+    createRock() {
+        const rock = new Rock(new Position(Math.random()*2000 % this.#window.innerWidth, Math.floor(Math.random()*2000 % this.#window.innerHeight)));
+        this.entities.set(rock.id, rock);
+        this.#physicsChannel.postMessage({
+            type: 'newRockCreated',
+            id: rock.id,
+            position: rock.position.export(),
+            mass: rock.size
+        })
     }
 
     handleUserInput() {

@@ -12,11 +12,15 @@ export class Rock extends GraphicEntity {
         this.#size = this.#sides * 10;
     }
 
+    get size(){
+        return this.#size;
+    }
+
     draw(ctx) {
         //center
 
-        ctx.fillStyle = '#FF0000';
-        ctx.fillRect(this.position.x - 2, this.position.y - 2, 4, 4);
+        // ctx.fillStyle = '#FF0000';
+        // ctx.fillRect(this.position.x - 2, this.position.y - 2, 4, 4);
 
         // body
         ctx.strokeStyle = '#FFF';
