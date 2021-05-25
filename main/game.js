@@ -23,7 +23,7 @@ export class Game {
 
         this.mainLoop();
     }
-
+    i = 0;
     mainLoop() {
         this.#mainCanvasContext.reset();
 
@@ -64,6 +64,10 @@ export class Game {
             this.#mainCanvasContext.fillText(text, this.#mainCanvas.width - textSize.width, textSize.fontBoundingBoxAscent);
         }
 
+
+        //console.log(this.#userControlledShip);
+
+        //if (++this.i < 0)
         requestAnimationFrame(this.mainLoop.bind(this));
     }
 }
