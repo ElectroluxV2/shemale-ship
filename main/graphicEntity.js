@@ -11,4 +11,8 @@ export class GraphicEntity {
     get position() {
         return this.#position;
     }
+
+    get id() {
+        return this.#id;
+    }
 }

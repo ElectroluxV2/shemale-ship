@@ -15,6 +15,10 @@ export class Game {
         this.#mainCanvasContext = this.#mainCanvas.getContext('2d');
         this.#physicsChannel = physicsChannel;
         this.#physicsChannel.onmessage = ({data} = event) => this[data.type](data);
+
+        const rock = new Rock(new Position(500, 500, 40.3));
+        this.entities.set(rock.id, rock);
+
         this.mainLoop();
     }
 
@@ -61,7 +65,10 @@ export class Game {
 
         this.handleUserInput();
 
-        new Rock(new Position(500, 500, 40.3)).draw(this.#mainCanvasContext);
+        for (const rock of this.entities.values()) {
+            rock.draw(this.#mainCanvasContext);
+        }
+
         this.#userControlledShip.draw(this.#mainCanvasContext);
 
         // Print ship position
