@@ -10,12 +10,12 @@ const physicsWorker = new Worker("physics/physicsWorker.js", {
 // Prepare communication channels between Workers
 const physicsChannel = new MessageChannel();
 physicsWorker.postMessage({
-    type: "physicsChannel",
+    type: "assignPhysicsChannel",
     physicsChannel: physicsChannel.port1
 }, [physicsChannel.port1]);
 
 mainWorker.postMessage({
-    type: "physicsChannel",
+    type: "assignPhysicsChannel",
     physicsChannel: physicsChannel.port2
 }, [physicsChannel.port2]);
 

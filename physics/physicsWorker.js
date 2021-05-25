@@ -1,48 +1,34 @@
-import { PhysicsEngine } from "./physicsEngine.js";
+import { PhysicsEngine } from './physicsEngine.js';
+import { Polyfills } from '../utils/polyfills.js';
 
-// Polyfill for canvas.context.reset();
-OffscreenCanvasRenderingContext2D.prototype.reset = OffscreenCanvasRenderingContext2D.prototype.reset || function (preserveTransform) {
-    if (preserveTransform) {
-        this.save();
-        this.setTransform(1, 0, 0, 1, 0, 0);
-    }
+const workerContext = {
+    // Contains physics engine, can not be const because engine needs communication channel with main worker
+    physicsEngine: null,
+    physicsChannel: null,
+    physicsCanvas: null,
+    assignPhysicsChannel: ({physicsChannel}) => {
+        workerContext.physicsChannel = physicsChannel;
+    },
+    transferCanvas: ({canvas, windowInnerHeight, windowInnerWidth, windowDevicePixelRatio}) => {
+        workerContext.physicsCanvas = canvas;
 
-    this.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        // Adjust to screen
+        workerContext.physicsCanvas.height = windowInnerHeight * windowDevicePixelRatio;
+        workerContext.physicsCanvas.width = windowInnerWidth * windowDevicePixelRatio;
+        workerContext.physicsCanvas.getContext('2d').scale(windowDevicePixelRatio, windowDevicePixelRatio);
 
-    if (preserveTransform) {
-        this.restore();
+        // Crate new object only when canvas is present
+        workerContext.physicsEngine = new PhysicsEngine(workerContext.physicsCanvas, workerContext.physicsChannel);
+    },
+    windowOnResize: ({windowInnerWidth, windowInnerHeight, windowDevicePixelRatio}) => {
+        // Adjust to new dimensions
+        workerContext.physicsCanvas.height = windowInnerHeight * windowDevicePixelRatio;
+        workerContext.physicsCanvas.width = windowInnerWidth * windowDevicePixelRatio;
+        workerContext.physicsCanvas.getContext('2d').scale(windowDevicePixelRatio, windowDevicePixelRatio);
     }
 };
 
-// Contains physics engine, can not be const because engine needs communication channel with main worker
-let physicsEngine = null;
-let physicsChannel = null;
-let physicsCanvas = null;
+onmessage = ({data} = event) => workerContext[data.type](data);
 
-onmessage = ({data} = event) => {
-    switch (data.type) {
-        case "windowOnResize":
-
-            // Adjust to new dimensions
-            physicsCanvas.height = data.windowInnerHeight * data.windowDevicePixelRatio;
-            physicsCanvas.width = data.windowInnerWidth * data.windowDevicePixelRatio;
-            physicsCanvas.getContext("2d").scale(data.windowDevicePixelRatio, data.windowDevicePixelRatio);
-            break;
-        case "physicsChannel":
-            physicsChannel = data.physicsChannel;
-            break;
-        case "transferCanvas":
-            physicsCanvas = data.canvas;
-
-            // Adjust to screen
-            physicsCanvas.height = data.windowInnerHeight * data.windowDevicePixelRatio;
-            physicsCanvas.width = data.windowInnerWidth * data.windowDevicePixelRatio;
-            physicsCanvas.getContext("2d").scale(data.windowDevicePixelRatio, data.windowDevicePixelRatio);
-
-            // Crate new object only when canvas is present
-            physicsEngine = new PhysicsEngine(physicsCanvas, physicsChannel);
-            break;
-        default:
-            console.warn(`Undefined data type "${data.type}"`, data);
-    }
-}
+// Polyfill for canvas.context.reset();
+OffscreenCanvasRenderingContext2D.prototype.reset = Polyfills.canvasContextReset;

@@ -1,54 +1,39 @@
 import { Game } from './game.js';
+import { Polyfills } from '../utils/polyfills.js';
 
-// Polyfill for canvas.context.reset();
-OffscreenCanvasRenderingContext2D.prototype.reset = OffscreenCanvasRenderingContext2D.prototype.reset || function (preserveTransform) {
-    if (preserveTransform) {
-        this.save();
-        this.setTransform(1, 0, 0, 1, 0, 0);
-    }
+const workerContext = {
+    game: null,
+    physicsChannel: null,
+    mainCanvas: null,
+    windowOnKeyDown: ({key}) => {
+        workerContext.game.keyboardStates[key] = true;
+    },
+    windowOnKeyUp: ({key}) => {
+        workerContext.game.keyboardStates[key] = false;
+    },
+    windowOnResize: ({windowInnerWidth, windowInnerHeight, windowDevicePixelRatio}) => {
+        // Adjust to new dimensions
+        workerContext.mainCanvas.height = windowInnerHeight * windowDevicePixelRatio;
+        workerContext.mainCanvas.width = windowInnerWidth * windowDevicePixelRatio;
+        workerContext.mainCanvas.getContext("2d").scale(windowDevicePixelRatio, windowDevicePixelRatio);
+    },
+    assignPhysicsChannel: ({physicsChannel}) => {
+        workerContext.physicsChannel = physicsChannel;
+    },
+    transferCanvas: ({canvas, windowInnerHeight, windowInnerWidth, windowDevicePixelRatio}) => {
+        workerContext.mainCanvas = canvas;
 
-    this.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        // Adjust to screen
+        workerContext.mainCanvas.height = windowInnerHeight * windowDevicePixelRatio;
+        workerContext.mainCanvas.width = windowInnerWidth * windowDevicePixelRatio;
+        workerContext.mainCanvas.getContext("2d").scale(windowDevicePixelRatio, windowDevicePixelRatio);
 
-    if (preserveTransform) {
-        this.restore();
+        // Crate new object only when canvas is present
+        workerContext.game = new Game(workerContext.mainCanvas, workerContext.physicsChannel);
     }
 };
 
-// Main Worker variables received from browsers main thread
-let game = null;
-let physicsChannel = null;
-let mainCanvas = null;
+onmessage = ({data} = event) => workerContext[data.type](data);
 
-onmessage = ({data} = event) => {
-    switch (data.type) {
-        case "windowOnKeyDown":
-            game.keyboardStates[data.key] = true;
-            break;
-        case "windowOnKeyUp":
-            game.keyboardStates[data.key] = false;
-            break;
-        case "windowOnResize":
-
-            // Adjust to new dimensions
-            mainCanvas.height = data.windowInnerHeight * data.windowDevicePixelRatio;
-            mainCanvas.width = data.windowInnerWidth * data.windowDevicePixelRatio;
-            mainCanvas.getContext("2d").scale(data.windowDevicePixelRatio, data.windowDevicePixelRatio);
-            break;
-        case "physicsChannel":
-            physicsChannel = data.physicsChannel;
-            break;
-        case "transferCanvas":
-            mainCanvas = data.canvas;
-
-            // Adjust to screen
-            mainCanvas.height = data.windowInnerHeight * data.windowDevicePixelRatio;
-            mainCanvas.width = data.windowInnerWidth * data.windowDevicePixelRatio;
-            mainCanvas.getContext("2d").scale(data.windowDevicePixelRatio, data.windowDevicePixelRatio);
-
-            // Crate new object only when canvas is present
-            game = new Game(mainCanvas, physicsChannel);
-            break;
-        default:
-            console.warn(`Undefined data type "${data.type}"`, data);
-    }
-}
+// Polyfill for canvas.context.reset();
+OffscreenCanvasRenderingContext2D.prototype.reset = Polyfills.canvasContextReset;
