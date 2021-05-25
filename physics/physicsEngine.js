@@ -59,6 +59,7 @@ export class PhysicsEngine {
 
         this.updateUserControlledShip();
 
-        requestAnimationFrame(this.mainLoop.bind(this));
+        setTimeout(this.mainLoop.bind(this), 200);
+        // requestAnimationFrame(this.mainLoop.bind(this));
     }
 }
