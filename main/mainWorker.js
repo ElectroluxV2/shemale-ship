@@ -3,33 +3,23 @@ import { Polyfills } from '../utils/polyfills.js';
 
 const workerContext = {
     game: null,
-    physicsChannel: null,
     mainCanvas: null,
+    constructor: ({canvas, window, physicsWorkerToMainWorkerChannel}) => {
+        workerContext.mainCanvas = canvas;
+        workerContext.windowOnResize({window});
+        workerContext.game = new Game(workerContext.mainCanvas, physicsWorkerToMainWorkerChannel);
+    },
     windowOnKeyDown: ({key}) => {
         workerContext.game.keyboardStates[key] = true;
     },
     windowOnKeyUp: ({key}) => {
         workerContext.game.keyboardStates[key] = false;
     },
-    windowOnResize: ({windowInnerWidth, windowInnerHeight, windowDevicePixelRatio}) => {
+    windowOnResize: ({window}) => {
         // Adjust to new dimensions
-        workerContext.mainCanvas.height = windowInnerHeight * windowDevicePixelRatio;
-        workerContext.mainCanvas.width = windowInnerWidth * windowDevicePixelRatio;
-        workerContext.mainCanvas.getContext("2d").scale(windowDevicePixelRatio, windowDevicePixelRatio);
-    },
-    assignPhysicsChannel: ({physicsChannel}) => {
-        workerContext.physicsChannel = physicsChannel;
-    },
-    transferCanvas: ({canvas, windowInnerHeight, windowInnerWidth, windowDevicePixelRatio}) => {
-        workerContext.mainCanvas = canvas;
-
-        // Adjust to screen
-        workerContext.mainCanvas.height = windowInnerHeight * windowDevicePixelRatio;
-        workerContext.mainCanvas.width = windowInnerWidth * windowDevicePixelRatio;
-        workerContext.mainCanvas.getContext("2d").scale(windowDevicePixelRatio, windowDevicePixelRatio);
-
-        // Crate new object only when canvas is present
-        workerContext.game = new Game(workerContext.mainCanvas, workerContext.physicsChannel);
+        workerContext.mainCanvas.height = window.innerHeight * window.devicePixelRatio;
+        workerContext.mainCanvas.width = window.innerWidth * window.devicePixelRatio;
+        workerContext.mainCanvas.getContext("2d").scale(window.devicePixelRatio, window.devicePixelRatio);
     }
 };
 
