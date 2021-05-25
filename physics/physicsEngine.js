@@ -14,33 +14,30 @@ export class PhysicsEngine {
         this.#physicsCanvas = physicsCanvas;
         this.#physicsCanvasContext = this.#physicsCanvas.getContext('2d');
         this.#physicsChannel = physicsChannel;
-        this.#physicsChannel.onmessage = ({data} = event) => {
-
-            if (data.type === 'userControlledShipMoveW') {
-                const angled = this.#userControlledShip.angledVector().multiply(UserControlledShip.thrustForward);
-                this.#userControlledShip.currAccX += angled.x;
-                this.#userControlledShip.currAccY += angled.y;
-
-            } else if (data.type === 'userControlledShipMoveS') {
-                const angled = this.#userControlledShip.angledVector().reverse().multiply(UserControlledShip.thrustBackward);
-                this.#userControlledShip.currAccX += angled.x;
-                this.#userControlledShip.currAccY += angled.y;
-
-            } else if (data.type === 'userControlledShipMoveA') {
-                this.#userControlledShip.currAccAngular -= UserControlledShip.thrustLeft;
-
-            } else if (data.type === 'userControlledShipMoveD') {
-                this.#userControlledShip.currAccAngular += UserControlledShip.thrustRight;
-
-            }
-        };
-
+        this.#physicsChannel.onmessage = ({data} = event) => this[data.type](data);
         this.mainLoop();
     }
 
-    mainLoop() {
-        this.#physicsCanvasContext.reset();
+    onUserControlledShipAction({action}) {
+        if (action === 'moveW') {
+            const angled = this.#userControlledShip.angledVector().multiply(UserControlledShip.thrustForward);
+            this.#userControlledShip.currAccX += angled.x;
+            this.#userControlledShip.currAccY += angled.y;
 
+        } else if (action === 'moveS') {
+            const angled = this.#userControlledShip.angledVector().reverse().multiply(UserControlledShip.thrustBackward);
+            this.#userControlledShip.currAccX += angled.x;
+            this.#userControlledShip.currAccY += angled.y;
+
+        } else if (action === 'moveA') {
+            this.#userControlledShip.currAccAngular -= UserControlledShip.thrustLeft;
+
+        } else if (action === 'moveD') {
+            this.#userControlledShip.currAccAngular += UserControlledShip.thrustRight;
+        }
+    }
+
+    updateUserControlledShip() {
         // Calculate forces for ship
         this.#userControlledShip.position.x += this.#userControlledShip.currAccX;
         this.#userControlledShip.currAccX *= PhysicsEngine.#resistance;
@@ -49,11 +46,18 @@ export class PhysicsEngine {
         this.#userControlledShip.position.angle += this.#userControlledShip.currAccAngular;
         this.#userControlledShip.currAccAngular *= PhysicsEngine.#angularResistance;
 
+        // TODO: Check if any changes to "visual" position (up to 2 digits precision changes) were made
         // Send result
         this.#physicsChannel.postMessage({
-            type: 'latestUserControlledShipPosition',
+            type: 'updateUserControlledShip',
             position: this.#userControlledShip.position.export()
         });
+    }
+
+    mainLoop() {
+        this.#physicsCanvasContext.reset();
+
+        this.updateUserControlledShip();
 
         requestAnimationFrame(this.mainLoop.bind(this));
     }

@@ -4,7 +4,8 @@ import { UserControlledShip } from './userControlledShip.js';
 
 export class Game {
     keyboardStates = new Map();
-    #userControlledShip = new UserControlledShip(new Position(200, 200));
+    entities = new Map();
+    #userControlledShip = new UserControlledShip();
     #mainCanvas;
     #mainCanvasContext;
     #physicsChannel;
@@ -13,43 +14,52 @@ export class Game {
         this.#mainCanvas = mainCanvas;
         this.#mainCanvasContext = this.#mainCanvas.getContext('2d');
         this.#physicsChannel = physicsChannel;
-        this.#physicsChannel.onmessage = ({data} = event) => {
-            switch (data.type) {
-                case 'latestUserControlledShipPosition':
-                    this.#userControlledShip.position.import(data.position);
-                    break;
-            }
-        };
-
+        this.#physicsChannel.onmessage = ({data} = event) => this[data.type](data);
         this.mainLoop();
     }
 
-    mainLoop() {
-        this.#mainCanvasContext.reset();
+    updateUserControlledShip({position}) {
+        this.#userControlledShip.position.import(position);
+    }
 
+    updateEntityPosition({id, position}) {
+        this.entities.get(id)?.position.import(position);
+    }
+
+    handleUserInput() {
         if (this.keyboardStates['w'] || this.keyboardStates['W']) {
             this.#physicsChannel.postMessage({
-                type: 'userControlledShipMoveW'
+                type: 'onUserControlledShipAction',
+                action: 'moveW'
             });
         }
 
         if (this.keyboardStates['s'] || this.keyboardStates['S']) {
             this.#physicsChannel.postMessage({
-                type: 'userControlledShipMoveS'
+                type: 'onUserControlledShipAction',
+                action: 'moveS'
             });
         }
 
         if (this.keyboardStates['a'] || this.keyboardStates['A']) {
             this.#physicsChannel.postMessage({
-                type: 'userControlledShipMoveA'
+                type: 'onUserControlledShipAction',
+                action: 'moveA'
             });
         }
 
         if (this.keyboardStates['d'] || this.keyboardStates['D']) {
             this.#physicsChannel.postMessage({
-                type: 'userControlledShipMoveD'
+                type: 'onUserControlledShipAction',
+                action: 'moveD'
             });
         }
+    }
+
+    mainLoop() {
+        this.#mainCanvasContext.reset();
+
+        this.handleUserInput();
 
         new Rock(new Position(500, 500, 40.3)).draw(this.#mainCanvasContext);
         this.#userControlledShip.draw(this.#mainCanvasContext);
@@ -58,11 +68,9 @@ export class Game {
         this.#mainCanvasContext.fillStyle = '#a0937d';
         this.#mainCanvasContext.font = 'bold 16px Arial';
 
-        if (this.#userControlledShip.position instanceof Position) {
-            const text = `${this.#userControlledShip.position.x.toFixed(2)} x, ${this.#userControlledShip.position.y.toFixed(2)} y, angle: ${this.#userControlledShip.position.angle.toFixed(2)}`;
-            const textSize = this.#mainCanvasContext.measureText(text);
-            this.#mainCanvasContext.fillText(text, this.#mainCanvas.width - textSize.width, textSize.fontBoundingBoxAscent);
-        }
+        const text = `${this.#userControlledShip.position.x.toFixed(2)} x, ${this.#userControlledShip.position.y.toFixed(2)} y, angle: ${this.#userControlledShip.position.angle.toFixed(2)}`;
+        const textSize = this.#mainCanvasContext.measureText(text);
+        this.#mainCanvasContext.fillText(text, this.#mainCanvas.width - textSize.width, textSize.fontBoundingBoxAscent);
 
         requestAnimationFrame(this.mainLoop.bind(this));
     }
