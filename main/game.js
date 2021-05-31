@@ -18,7 +18,7 @@ export class Game {
         this.#physicsChannel = physicsChannel;
         this.#physicsChannel.onmessage = ({data} = event) => this[data.type](data);
 
-        for (let i= 0; i<10; i++){
+        for (let i = 0; i < 10; i++) {
             this.createRock();
         }
         this.mainLoop();

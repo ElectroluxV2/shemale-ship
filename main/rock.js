@@ -1,53 +1,71 @@
 import { GraphicEntity } from './graphicEntity.js';
 import { Random } from '../utils/random.js';
 import { Position } from '../utils/position.js';
+import { Point } from '../utils/point.js'
 
 export class Rock extends GraphicEntity {
     #sides;
     #size = 50;
-
+    angles = [];
+    vertices = [];
+    rng = Random.getSeededRandom(this.id);
     constructor(position = new Position(), id = performance.now()) {
         super(position, id);
         this.#sides = (Math.random() * 10 % 8) + 5;
         this.#size = this.#sides * 10;
+
+        let sum = 0;
+        for (let i = 1; i < this.#sides - 1; i++) {
+            let randFactor = ((Math.floor(this.rng() * 100) % 10) + 5);
+            if (sum + 360 / this.#sides + randFactor > 360) break;
+            sum += 360 / this.#sides + randFactor;
+            this.angles.push(sum);
+        }
+
+        this.vertices = Rock.vertices(this);
     }
 
-    get size(){
+    get size() {
         return this.#size;
     }
 
+    get sides() {
+        return this.#sides;
+    }
+
+    static vertices(object) {
+        const result = []
+        result.push(new Point(object.position.x + object.size * Math.cos(0), object.position.y - object.size * Math.sin(0)));
+        for (let i = 0; i < object.sides - 1; i++) {
+            let tempX = object.size * Math.cos(object.angles[i] * Math.PI / 180) + object.position.x;
+            let tempY = object.size * Math.sin(object.angles[i] * Math.PI / 180) + object.position.y
+            result.push(new Point(tempX, tempY));
+        }
+        return result
+    }
+
+    static path(vertices) {
+        const path = new Path2D();
+        path.moveTo(vertices[0].x, vertices[0].y);
+        for (let i = 1; i < vertices.length; i++) {
+            path.lineTo(vertices[i].x, vertices[i].y);
+        }
+        path.closePath();
+        return path;
+    }
+
     draw(ctx) {
-        //center
-
-        // ctx.fillStyle = '#FF0000';
-        // ctx.fillRect(this.position.x - 2, this.position.y - 2, 4, 4);
-
         // body
         ctx.strokeStyle = '#FFF';
         ctx.lineWidth = 3;
         ctx.translate(this.position.x, this.position.y);
-        ctx.rotate(this.position.angle * Math.PI / 180);
+        ctx.rotate(this.position.radians);
         ctx.translate(-this.position.x, -this.position.y);
-
-        ctx.beginPath();
-        ctx.moveTo(this.position.x + this.#size * Math.cos(0), this.position.y - this.#size * Math.sin(0));
-        ctx.lineTo(this.position.x + this.#size * Math.cos(0), this.position.y - this.#size * Math.sin(0));
-
-        let randFactor = 0;
-        let sum = 0;
-        const rng = Random.getSeededRandom(this.id);
-
-        for (let i = 1; i < this.#sides - 1; i++) {
-            randFactor = ((Math.floor(rng() * 100) % 10) + 5);
-            if (sum + 360 / this.#sides + randFactor > 360) break;
-            sum +=  360 / this.#sides + randFactor;
-            let tempX = this.#size * Math.cos(sum * Math.PI / 180) + this.position.x;
-            let tempY = this.#size * Math.sin(sum * Math.PI / 180) + this.position.y;
-            ctx.lineTo(tempX, tempY);
-        }
-
-        ctx.closePath();
-        ctx.stroke();
+        ctx.stroke(Rock.path(this.vertices));
         ctx.resetTransform();
+
+        // center
+        ctx.fillStyle = '#FF0000';
+        ctx.fillRect(this.position.x - 2, this.position.y - 2, 4, 4);
     }
 }

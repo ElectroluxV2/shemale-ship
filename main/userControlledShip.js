@@ -25,5 +25,6 @@ export class UserControlledShip extends GraphicEntity {
         ctx.closePath();
         ctx.stroke();
         ctx.resetTransform();
+
     }
 }

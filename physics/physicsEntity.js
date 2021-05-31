@@ -18,7 +18,11 @@ export class PhysicsEntity {
         return Vector.j.multiply(Math.cos(this.position.radians)).add(Vector.i.multiply(Math.sin(this.position.radians)));
     }
 
-    get id(){
+    get id() {
         return this.#id;
+    }
+
+    isColliding() {
+
     }
 }
