@@ -7,7 +7,6 @@ export class Rock extends GraphicEntity {
     #sides;
     #size = 50;
     angles = [];
-    vertices = [];
     rng = Random.getSeededRandom(this.id);
     constructor(position = new Position(), id = performance.now()) {
         super(position, id);
@@ -21,8 +20,6 @@ export class Rock extends GraphicEntity {
             sum += 360 / this.#sides + randFactor;
             this.angles.push(sum);
         }
-
-        this.vertices = Rock.vertices(this);
     }
 
     get size() {
@@ -61,11 +58,12 @@ export class Rock extends GraphicEntity {
         ctx.translate(this.position.x, this.position.y);
         ctx.rotate(this.position.radians);
         ctx.translate(-this.position.x, -this.position.y);
-        ctx.stroke(Rock.path(this.vertices));
+        ctx.stroke(Rock.path(Rock.vertices(this)));
         ctx.resetTransform();
 
         // center
         ctx.fillStyle = '#FF0000';
         ctx.fillRect(this.position.x - 2, this.position.y - 2, 4, 4);
+        ctx.resetTransform();
     }
 }
