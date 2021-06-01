@@ -18,24 +18,20 @@ export class Game {
         this.#physicsChannel = physicsChannel;
         this.#physicsChannel.onmessage = ({data} = event) => this[data.type](data);
 
-        for (let i = 0; i < 10; i++) {
-            this.createRock();
-        }
+        // this.createRock();
+
+        const rock1 = new Rock(69, new Position(100, 100));
+        const rock2 = new Rock(422320, new Position(100, 150));
+        const rock3 = new Rock(12431412, new Position(400, 400));
+
+        this.saveRock(rock1);
+        this.saveRock(rock2);
+        this.saveRock(rock3);
+
         this.mainLoop();
     }
 
-    updateUserControlledShip({position}) {
-        this.#userControlledShip.position.import(position);
-    }
-
-    updateEntityPosition({id, position}) {
-        // console.log(position)
-        // console.log(id)
-        this.entities.get(id)?.position.import(position);
-    }
-
-    createRock() {
-        const rock = new Rock(new Position(Math.random()*2000 % this.#window.innerWidth, Math.floor(Math.random()*2000 % this.#window.innerHeight)));
+    saveRock(rock) {
         this.entities.set(rock.id, rock);
         this.#physicsChannel.postMessage({
             type: 'newRockCreated',
@@ -43,6 +39,33 @@ export class Game {
             position: rock.position.export(),
             mass: rock.size
         })
+    }
+
+    updateUserControlledShip({position}) {
+        this.#userControlledShip.position.import(position);
+    }
+
+    updateEntityPosition({id, position}) {
+        this.entities.get(id)?.position.import(position);
+    }
+
+    updateEntityColor({id, color}) {
+        this.entities.get(id).color = color;
+    }
+
+    createRock() {
+        const rock = new Rock(performance.now(), new Position(Math.random()*2000 % this.#window.innerWidth, Math.floor(Math.random()*2000 % this.#window.innerHeight)));
+        this.entities.set(rock.id, rock);
+        this.#physicsChannel.postMessage({
+            type: 'newRockCreated',
+            id: rock.id,
+            position: rock.position.export(),
+            mass: rock.size
+        })
+
+        if (this.entities.size > 10) return;
+
+        setTimeout(this.createRock.bind(this), 10);
     }
 
     handleUserInput() {

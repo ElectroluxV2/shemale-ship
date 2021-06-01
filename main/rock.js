@@ -4,22 +4,30 @@ import { Position } from '../utils/position.js';
 import { Point } from '../utils/point.js'
 
 export class Rock extends GraphicEntity {
+    color = '#FFF'; // TMP
     #sides;
     #size = 50;
     angles = [];
-    rng = Random.getSeededRandom(this.id);
-    constructor(position = new Position(), id = performance.now()) {
-        super(position, id);
-        this.#sides = (Math.random() * 10 % 8) + 5;
+    rng;
+    constructor(id = performance.now(), position = new Position()) {
+        super(id, position);
+        this.rng = Random.getSeededRandom(this.id);
+        this.#sides = Math.floor(this.rng() * 10) % 8 + 5;
         this.#size = this.#sides * 10;
+        this.angles = Rock.generateRandomAngles(this.rng, this.sides);
+        console.log(`${id}`, this)
+    }
 
+    static generateRandomAngles(rng, sides) {
+        const angles = [];
         let sum = 0;
-        for (let i = 1; i < this.#sides - 1; i++) {
-            let randFactor = ((Math.floor(this.rng() * 100) % 10) + 5);
-            if (sum + 360 / this.#sides + randFactor > 360) break;
-            sum += 360 / this.#sides + randFactor;
-            this.angles.push(sum);
+        for (let i = 0; i < sides - 1; i++) {
+            let randFactor = ((Math.floor(rng() * 100) % 10) + 5);
+            if (sum + 360 / sides + randFactor > 360) break;
+            sum += 360 / sides + randFactor;
+            angles.push(sum);
         }
+        return angles;
     }
 
     get size() {
@@ -51,10 +59,23 @@ export class Rock extends GraphicEntity {
         return path;
     }
 
+    static draw(ctx, object, color) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 3;
+        ctx.translate(object.position.x, object.position.y);
+        ctx.rotate(object.position.radians);
+        ctx.translate(-object.position.x, -object.position.y);
+        ctx.stroke(Rock.path(Rock.vertices(object)));
+
+        // center
+        ctx.fillStyle = '#FF0000';
+        ctx.fillRect(object.position.x - 2, object.position.y - 2, 4, 4);
+    }
+
     draw(ctx) {
         // body
-        ctx.strokeStyle = '#FFF';
-        ctx.lineWidth = 3;
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 10;
         ctx.translate(this.position.x, this.position.y);
         ctx.rotate(this.position.radians);
         ctx.translate(-this.position.x, -this.position.y);

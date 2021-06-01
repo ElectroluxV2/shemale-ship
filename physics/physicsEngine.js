@@ -3,6 +3,7 @@ import { Position } from '../utils/position.js';
 import { UserControlledShip } from '../main/userControlledShip.js';
 import { Vector } from '../utils/vector.js';
 import { Random } from '../utils/random.js';
+import { PhysicsRock } from './physicsRock.js';
 
 export class PhysicsEngine {
     static #resistance = 0.95;
@@ -58,7 +59,7 @@ export class PhysicsEngine {
     }
 
     newRockCreated({id, position, mass}) {
-        const rock = new PhysicsEntity(id);
+        const rock = new PhysicsRock(id);
         rock.position.import(position);
         rock.mass = mass;
         this.#rocks.set(id, rock);
@@ -67,8 +68,8 @@ export class PhysicsEngine {
         const randAngle = Math.floor( RNG() * 400 % 330 + 30);
         const angled = Vector.j.multiply(Math.cos(randAngle * Math.PI / 180)).add(Vector.i.multiply(Math.sin(randAngle * Math.PI / 180))).multiply(60/mass);
 
-        rock.currAccX = angled.x;
-        rock.currAccY = angled.y;
+        // rock.currAccX = angled.x;
+        // rock.currAccY = angled.y;
         rock.currAccAngular =  randAngle / 100 * (50 / rock.mass);
 
     }
@@ -80,7 +81,6 @@ export class PhysicsEngine {
             rock.position.y -= rock.currAccY;
             rock.position.angle += rock.currAccAngular;
 
-
             this.#physicsChannel.postMessage({
                 type: 'updateEntityPosition',
                 id: rock.id,
@@ -90,23 +90,40 @@ export class PhysicsEngine {
     }
 
     collision() {
-        for (const rockA of this.#rocks) {
-            for (const rockB of this.#rocks) {
-                rockA.hitMeIfYouCan(rockB);
+        for (const rockA of this.#rocks.values()) {
+            for (const rockB of this.#rocks.values()) {
+                if (rockA === rockB) continue;
+
+                const color = rockA.isColliding(this.#physicsCanvasContext, rockB) ? 'rebeccapurple' : '#FFF';
+
+                this.#physicsChannel.postMessage({
+                   type: 'updateEntityColor',
+                   id: rockA.id,
+                   color: color
+                });
+
+                this.#physicsChannel.postMessage({
+                    type: 'updateEntityColor',
+                    id: rockB.id,
+                    color: color
+                });
+
+
             }
 
-            rockA.hitMeIfYouCan(this.#userControlledShip);
-            userControlledShip.hitMeIfYouCan(rockA);
+
+            // rockA.hitMeIfYouCan(this.#userControlledShip);
+            // userControlledShip.hitMeIfYouCan(rockA);
         }
     }
 
     mainLoop() {
         this.#physicsCanvasContext.reset();
-
+        this.collision();
         this.updateUserControlledShip();
         this.updateRocks();
 
-        // setTimeout(this.mainLoop.bind(this), 200);
+        //setTimeout(this.mainLoop.bind(this), 2000);
         requestAnimationFrame(this.mainLoop.bind(this));
     }
 }

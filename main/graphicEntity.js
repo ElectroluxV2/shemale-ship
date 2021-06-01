@@ -3,7 +3,7 @@ export class GraphicEntity {
     #id;
     #position;
 
-    constructor(position = new Position(), id = performance.now()) {
+    constructor(id = performance.now(), position = new Position()) {
         this.#id = id;
         this.#position = position;
     }

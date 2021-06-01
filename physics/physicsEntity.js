@@ -9,7 +9,7 @@ export class PhysicsEntity {
     #id;
     mass = 0;
 
-    constructor(id ,position = new Position(0, 0, 0)) {
+    constructor(id, position = new Position(0, 0, 0)) {
         this.position = position;
         this.#id = id;
     }
