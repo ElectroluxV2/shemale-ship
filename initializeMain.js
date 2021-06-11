@@ -56,3 +56,8 @@ window.onkeyup = event => mainWorker.postMessage({
 });
 
 // Etc. eg. PointerEvents
+window.onpointermove = event => mainWorker.postMessage({
+    type: 'onPointerMove',
+    x: event.clientX,
+    y: event.clientY
+})

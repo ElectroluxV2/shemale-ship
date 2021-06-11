@@ -9,13 +9,14 @@ export class Rock extends GraphicEntity {
     #size = 50;
     angles = [];
     rng;
+    lineWidth = 3;
+
     constructor(id = performance.now(), position = new Position()) {
         super(id, position);
         this.rng = Random.getSeededRandom(this.id);
         this.#sides = Math.floor(this.rng() * 10) % 8 + 5;
         this.#size = this.#sides * 10;
         this.angles = Rock.generateRandomAngles(this.rng, this.sides);
-        console.log(`${id}`, this)
     }
 
     static generateRandomAngles(rng, sides) {
@@ -55,36 +56,25 @@ export class Rock extends GraphicEntity {
         for (let i = 1; i < vertices.length; i++) {
             path.lineTo(vertices[i].x, vertices[i].y);
         }
+        path.lineWidth = 3;
         path.closePath();
         return path;
     }
 
-    static draw(ctx, object, color) {
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 3;
+    static draw(ctx, object) {
         ctx.translate(object.position.x, object.position.y);
         ctx.rotate(object.position.radians);
         ctx.translate(-object.position.x, -object.position.y);
-        ctx.stroke(Rock.path(Rock.vertices(object)));
+
+        const path = Rock.path(Rock.vertices(object));
+        ctx.strokeStyle = object.color;
+        ctx.lineWidth = path.lineWidth;
+        ctx.stroke(path);
 
         // center
         ctx.fillStyle = '#FF0000';
         ctx.fillRect(object.position.x - 2, object.position.y - 2, 4, 4);
-    }
 
-    draw(ctx) {
-        // body
-        ctx.strokeStyle = this.color;
-        ctx.lineWidth = 10;
-        ctx.translate(this.position.x, this.position.y);
-        ctx.rotate(this.position.radians);
-        ctx.translate(-this.position.x, -this.position.y);
-        ctx.stroke(Rock.path(Rock.vertices(this)));
-        ctx.resetTransform();
-
-        // center
-        ctx.fillStyle = '#FF0000';
-        ctx.fillRect(this.position.x - 2, this.position.y - 2, 4, 4);
         ctx.resetTransform();
     }
 }

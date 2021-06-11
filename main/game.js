@@ -104,7 +104,7 @@ export class Game {
         this.handleUserInput();
 
         for (const rock of this.entities.values()) {
-            rock.draw(this.#mainCanvasContext);
+            Rock.draw(this.#mainCanvasContext, rock);
         }
 
         this.#userControlledShip.draw(this.#mainCanvasContext);

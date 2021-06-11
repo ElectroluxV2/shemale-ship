@@ -24,38 +24,4 @@ export class PhysicsRock extends PhysicsEntity {
     get vertices() {
         return Rock.vertices(this);
     }
-
-
-    isColliding(ctx, other) {
-        const myVertices = this.vertices;
-        const myPath = this.path(myVertices);
-
-        const otherVertices = other.vertices;
-        const otherPath = other.path(myVertices);
-
-        ctx.resetTransform();
-        //Rock.draw(ctx, other, 'red');
-        Rock.draw(ctx, other, 'red')
-
-        for (const myVertex of myVertices) {
-            if (ctx.isPointInPath(otherPath, myVertex.x, myVertex.y)) {
-                ctx.resetTransform();
-                return true;
-            }
-
-        }
-
-        ctx.resetTransform();
-        //Rock.draw(ctx, this, 'green');
-        //
-        // for (const otherVertex of otherVertices) {
-        //     if (ctx.isPointInPath(myPath, otherVertex.x, otherVertex.y)) {
-        //         ctx.resetTransform();
-        //         return true;
-        //     }
-        // }
-        //
-        // ctx.resetTransform();
-        return false;
-    }
 }

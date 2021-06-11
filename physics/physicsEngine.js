@@ -4,6 +4,8 @@ import { UserControlledShip } from '../main/userControlledShip.js';
 import { Vector } from '../utils/vector.js';
 import { Random } from '../utils/random.js';
 import { PhysicsRock } from './physicsRock.js';
+import { Rock } from '../main/rock.js';
+import { Point } from '../utils/point.js';
 
 export class PhysicsEngine {
     static #resistance = 0.95;
@@ -13,6 +15,8 @@ export class PhysicsEngine {
     #physicsCanvasContext;
     #physicsChannel;
     #userControlledShip = new PhysicsEntity(new Position(200, 200));
+    #cursorX;
+    #cursorY;
 
     constructor(physicsCanvas, physicsChannel) {
         this.#physicsCanvas = physicsCanvas;
@@ -89,31 +93,21 @@ export class PhysicsEngine {
         }
     }
 
+    onPointerMove({x, y}) {
+        this.#cursorX = x;
+        this.#cursorY = y;
+    }
+
     collision() {
-        for (const rockA of this.#rocks.values()) {
-            for (const rockB of this.#rocks.values()) {
-                if (rockA === rockB) continue;
+        for (const rock of this.#rocks.values()) {
 
-                const color = rockA.isColliding(this.#physicsCanvasContext, rockB) ? 'rebeccapurple' : '#FFF';
+            const color = rock.isColliding(this.#physicsCanvasContext, new Point(this.#cursorX, this.#cursorY), Rock.path(rock.vertices)) ? 'rebeccapurple' : 'white'
 
-                this.#physicsChannel.postMessage({
-                   type: 'updateEntityColor',
-                   id: rockA.id,
-                   color: color
-                });
-
-                this.#physicsChannel.postMessage({
-                    type: 'updateEntityColor',
-                    id: rockB.id,
-                    color: color
-                });
-
-
-            }
-
-
-            // rockA.hitMeIfYouCan(this.#userControlledShip);
-            // userControlledShip.hitMeIfYouCan(rockA);
+            this.#physicsChannel.postMessage({
+                type: 'updateEntityColor',
+                id: rock.id,
+                color: color
+            });
         }
     }
 
@@ -122,6 +116,11 @@ export class PhysicsEngine {
         this.collision();
         this.updateUserControlledShip();
         this.updateRocks();
+
+
+        this.#physicsCanvasContext.fillStyle = 'red';
+        this.#physicsCanvasContext.fillRect(this.#cursorX, this.#cursorY, 1, 1);
+
 
         //setTimeout(this.mainLoop.bind(this), 2000);
         requestAnimationFrame(this.mainLoop.bind(this));
