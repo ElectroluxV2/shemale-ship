@@ -72,8 +72,8 @@ export class PhysicsEngine {
         const randAngle = Math.floor( RNG() * 400 % 330 + 30);
         const angled = Vector.j.multiply(Math.cos(randAngle * Math.PI / 180)).add(Vector.i.multiply(Math.sin(randAngle * Math.PI / 180))).multiply(60/mass);
 
-        // rock.currAccX = angled.x;
-        // rock.currAccY = angled.y;
+        rock.currAccX = angled.x;
+        rock.currAccY = angled.y;
         rock.currAccAngular =  randAngle / 100 * (50 / rock.mass);
 
     }
