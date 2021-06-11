@@ -18,27 +18,16 @@ export class Game {
         this.#physicsChannel = physicsChannel;
         this.#physicsChannel.onmessage = ({data} = event) => this[data.type](data);
 
-        // this.createRock();
 
-        const rock1 = new Rock(69, new Position(500, 600));
-        const rock2 = new Rock(422320, new Position(500, 700));
-        //const rock3 = new Rock(12431412, new Position(400, 400));
+         for (let i = 0; i < 1000; i++) {
+             this.createRock();
+         }
 
-        this.saveRock(rock1);
-        this.saveRock(rock2);
-        //this.saveRock(rock3);
+        // this.createRock(new Rock(10, new Position(150, 150)));
+        // this.createRock(new Rock(33, new Position(200, 200)));
+        // this.createRock(new Rock(67, new Position(280, 280)));
 
         this.mainLoop();
-    }
-
-    saveRock(rock) {
-        this.entities.set(rock.id, rock);
-        this.#physicsChannel.postMessage({
-            type: 'newRockCreated',
-            id: rock.id,
-            position: rock.position.export(),
-            mass: rock.size
-        })
     }
 
     updateUserControlledShip({position}) {
@@ -53,19 +42,14 @@ export class Game {
         this.entities.get(id).color = color;
     }
 
-    createRock() {
-        const rock = new Rock(performance.now(), new Position(Math.random()*2000 % this.#window.innerWidth, Math.floor(Math.random()*2000 % this.#window.innerHeight)));
+    createRock(rock = new Rock(performance.now(), new Position(Math.random()*2000 % this.#window.innerWidth, Math.floor(Math.random()*2000 % this.#window.innerHeight)))) {
         this.entities.set(rock.id, rock);
         this.#physicsChannel.postMessage({
             type: 'newRockCreated',
             id: rock.id,
             position: rock.position.export(),
             mass: rock.size
-        })
-
-        if (this.entities.size > 10) return;
-
-        setTimeout(this.createRock.bind(this), 10);
+        });
     }
 
     handleUserInput() {

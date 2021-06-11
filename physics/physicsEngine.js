@@ -104,22 +104,22 @@ export class PhysicsEngine {
             const parentVertices = parent.vertices;
 
             for (const child of this.#rocks.values()) {
+                if (parent === child) continue;
 
-                const color = child.isColliding(this.#physicsCanvasContext, parentVertices, Rock.path(child.vertices)) ? '#db3992' : 'white';
+                if (child.isColliding(this.#physicsCanvasContext, parentVertices, Rock.path(child.vertices))) {
+                    this.#physicsChannel.postMessage({
+                        type: 'updateEntityColor',
+                        id: parent.id,
+                        color: '#db3992'
+                    });
 
-                this.#physicsChannel.postMessage({
-                    type: 'updateEntityColor',
-                    id: parent.id,
-                    color: color
-                });
+                    this.#physicsChannel.postMessage({
+                        type: 'updateEntityColor',
+                        id: child.id,
+                        color: '#db3992'
+                    });
+                }
 
-                this.#physicsChannel.postMessage({
-                    type: 'updateEntityColor',
-                    id: child.id,
-                    color: color
-                });
-
-                break;
             }
 
             for (const vertex of parent.vertices) {
