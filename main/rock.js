@@ -2,6 +2,7 @@ import { GraphicEntity } from './graphicEntity.js';
 import { Random } from '../utils/random.js';
 import { Position } from '../utils/position.js';
 import { Point } from '../utils/point.js'
+import { Polyfills } from '../utils/polyfills.js';
 
 export class Rock extends GraphicEntity {
     color = '#FFF'; // TMP
@@ -41,11 +42,14 @@ export class Rock extends GraphicEntity {
 
     static vertices(object) {
         const result = []
-        result.push(new Point(object.position.x + object.size * Math.cos(0), object.position.y - object.size * Math.sin(0)));
+        const first = new Point(object.position.x + object.size * Math.cos(0), object.position.y - object.size * Math.sin(0));
+        result.push(Polyfills.rotate(object.position, first, object.position.radians));
         for (let i = 0; i < object.sides - 1; i++) {
             let tempX = object.size * Math.cos(object.angles[i] * Math.PI / 180) + object.position.x;
-            let tempY = object.size * Math.sin(object.angles[i] * Math.PI / 180) + object.position.y
-            result.push(new Point(tempX, tempY));
+            let tempY = object.size * Math.sin(object.angles[i] * Math.PI / 180) + object.position.y;
+
+            const temp = new Point(tempX, tempY);
+            result.push(Polyfills.rotate(object.position, temp, object.position.radians));
         }
         return result
     }
@@ -62,10 +66,6 @@ export class Rock extends GraphicEntity {
     }
 
     static draw(ctx, object) {
-        ctx.translate(object.position.x, object.position.y);
-        ctx.rotate(object.position.radians);
-        ctx.translate(-object.position.x, -object.position.y);
-
         const path = Rock.path(Rock.vertices(object));
         ctx.strokeStyle = object.color;
         ctx.lineWidth = path.lineWidth;
@@ -74,7 +74,5 @@ export class Rock extends GraphicEntity {
         // center
         ctx.fillStyle = '#FF0000';
         ctx.fillRect(object.position.x - 2, object.position.y - 2, 4, 4);
-
-        ctx.resetTransform();
     }
 }

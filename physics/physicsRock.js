@@ -2,6 +2,7 @@ import { PhysicsEntity } from './physicsEntity.js';
 import { Position } from '../utils/position.js';
 import { Random } from '../utils/random.js';
 import { Rock } from '../main/rock.js';
+import { Polyfills } from '../utils/polyfills.js';
 
 export class PhysicsRock extends PhysicsEntity {
     sides;

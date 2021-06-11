@@ -26,9 +26,6 @@ export class PhysicsEntity {
     #DEBUG = false;
 
     isColliding(ctx, point, path) {
-        ctx.translate(this.position.x, this.position.y);
-        ctx.rotate(this.position.radians);
-        ctx.translate(-this.position.x, -this.position.y);
         ctx.lineWidth = path.lineWidth;
 
         const isInside = ctx.isPointInPath(path, point.x, point.y);
@@ -37,8 +34,6 @@ export class PhysicsEntity {
             ctx.strokeStyle = isInside ? 'rebeccapurple' : 'white'
             ctx.stroke(path);
         }
-
-        ctx.resetTransform();
 
         return isInside;
     }

@@ -21,3 +21,4 @@ onmessage = ({data} = event) => workerContext[data.type](data);
 
 // Polyfill for canvas.context.reset();
 OffscreenCanvasRenderingContext2D.prototype.reset = Polyfills.canvasContextReset;
+OffscreenCanvasRenderingContext2D.prototype.rotate = Polyfills.rotate;
