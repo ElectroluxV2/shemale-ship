@@ -20,13 +20,13 @@ export class Game {
 
         // this.createRock();
 
-        const rock1 = new Rock(69, new Position(100, 100));
-        const rock2 = new Rock(422320, new Position(100, 150));
-        const rock3 = new Rock(12431412, new Position(400, 400));
+        const rock1 = new Rock(69, new Position(500, 600));
+        const rock2 = new Rock(422320, new Position(500, 700));
+        //const rock3 = new Rock(12431412, new Position(400, 400));
 
         this.saveRock(rock1);
         this.saveRock(rock2);
-        this.saveRock(rock3);
+        //this.saveRock(rock3);
 
         this.mainLoop();
     }

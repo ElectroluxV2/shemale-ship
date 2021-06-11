@@ -99,15 +99,33 @@ export class PhysicsEngine {
     }
 
     collision() {
-        for (const rock of this.#rocks.values()) {
 
-            const color = rock.isColliding(this.#physicsCanvasContext, new Point(this.#cursorX, this.#cursorY), Rock.path(rock.vertices)) ? 'rebeccapurple' : 'white'
+        for (const parent of this.#rocks.values()) {
+            const parentVertices = parent.vertices;
 
-            this.#physicsChannel.postMessage({
-                type: 'updateEntityColor',
-                id: rock.id,
-                color: color
-            });
+            for (const child of this.#rocks.values()) {
+
+                const color = child.isColliding(this.#physicsCanvasContext, parentVertices, Rock.path(child.vertices)) ? '#db3992' : 'white';
+
+                this.#physicsChannel.postMessage({
+                    type: 'updateEntityColor',
+                    id: parent.id,
+                    color: color
+                });
+
+                this.#physicsChannel.postMessage({
+                    type: 'updateEntityColor',
+                    id: child.id,
+                    color: color
+                });
+
+                break;
+            }
+
+            for (const vertex of parent.vertices) {
+                this.#physicsCanvasContext.fillStyle = parent.id % 2 === 0 ? 'red' : 'green';
+                this.#physicsCanvasContext.fillRect(vertex.x - 4, vertex.y - 4, 8, 8);
+            }
         }
     }
 
@@ -122,7 +140,7 @@ export class PhysicsEngine {
         this.#physicsCanvasContext.fillRect(this.#cursorX, this.#cursorY, 1, 1);
 
 
-        //setTimeout(this.mainLoop.bind(this), 2000);
+        // setTimeout(this.mainLoop.bind(this), 2000);
         requestAnimationFrame(this.mainLoop.bind(this));
     }
 }

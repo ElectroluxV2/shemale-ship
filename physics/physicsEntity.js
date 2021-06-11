@@ -25,16 +25,20 @@ export class PhysicsEntity {
 
     #DEBUG = false;
 
-    isColliding(ctx, point, path) {
+    isColliding(ctx, points, path) {
         ctx.lineWidth = path.lineWidth;
 
-        const isInside = ctx.isPointInPath(path, point.x, point.y);
-
-        if (this.#DEBUG) {
-            ctx.strokeStyle = isInside ? 'rebeccapurple' : 'white'
-            ctx.stroke(path);
+        for (const point of points) {
+            if(ctx.isPointInPath(path, point.x, point.y)) {
+                return true;
+            }
         }
 
-        return isInside;
+        // if (this.#DEBUG) {
+        //     ctx.strokeStyle = isInside ? 'rebeccapurple' : 'white'
+        //     ctx.stroke(path);
+        // }
+
+        return false;
     }
 }
