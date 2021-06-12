@@ -21,8 +21,9 @@ export class Game {
         this.#physicsChannel.onmessage = ({data} = event) => this[data.type](data);
 
 
-         for (let i = 0; i < 1000; i++) {
-             this.createRock();
+         for (let i = 1; i < 200; i++) {
+
+             this.createRock(new Rock(i, new Position(200 + i, 200 + i)));
          }
 
         // this.createRock(new Rock(10, new Position(150, 150)));
