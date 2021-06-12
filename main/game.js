@@ -10,6 +10,8 @@ export class Game {
     #mainCanvasContext;
     #physicsChannel;
     #window
+    #cursorX;
+    #cursorY;
 
     constructor(mainCanvas, window, physicsChannel) {
         this.#mainCanvas = mainCanvas;
@@ -40,6 +42,11 @@ export class Game {
 
     updateEntityColor({id, color}) {
         this.entities.get(id).color = color;
+    }
+
+    onPointerMove(x, y) {
+        this.#cursorX = x;
+        this.#cursorY = y;
     }
 
     createRock(rock = new Rock(performance.now(), new Position(Math.random()*2000 % this.#window.innerWidth, Math.floor(Math.random()*2000 % this.#window.innerHeight)))) {
@@ -83,6 +90,9 @@ export class Game {
     }
 
     mainLoop() {
+        // Measure frame time
+        const start = performance.now();
+
         this.#mainCanvasContext.reset();
 
         this.handleUserInput();
@@ -93,11 +103,18 @@ export class Game {
 
         this.#userControlledShip.draw(this.#mainCanvasContext);
 
+        this.#mainCanvasContext.fillStyle = 'red';
+        this.#mainCanvasContext.fillRect(this.#cursorX, this.#cursorY, 1, 1);
+
+        // Measure frame time
+        const stop = performance.now();
+        const fps = `${(1000 / (stop - start)).toFixed(2)} fps`;
+
         // Print ship position
         this.#mainCanvasContext.fillStyle = '#a0937d';
         this.#mainCanvasContext.font = 'bold 16px Arial';
 
-        const text = `${this.#userControlledShip.position.x.toFixed(2)} x, ${this.#userControlledShip.position.y.toFixed(2)} y, angle: ${this.#userControlledShip.position.angle.toFixed(2)}`;
+        const text = `${this.#userControlledShip.position.x.toFixed(2)} x, ${this.#userControlledShip.position.y.toFixed(2)} y, angle: ${this.#userControlledShip.position.angle.toFixed(2)}, gpu fps: ${fps}`;
         const textSize = this.#mainCanvasContext.measureText(text);
         this.#mainCanvasContext.fillText(text, this.#mainCanvas.width - textSize.width, textSize.fontBoundingBoxAscent);
 

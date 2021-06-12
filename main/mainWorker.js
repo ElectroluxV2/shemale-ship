@@ -24,11 +24,7 @@ const workerContext = {
         workerContext.mainCanvas.getContext('2d').scale(window.devicePixelRatio, window.devicePixelRatio);
     },
     onPointerMove: ({x, y}) => {
-        workerContext.physicsWorkerToMainWorkerChannel?.postMessage({
-            type: 'onPointerMove',
-            x,
-            y
-        });
+        workerContext.game?.onPointerMove(x, y);
     }
 };
 
