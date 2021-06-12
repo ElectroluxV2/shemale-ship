@@ -15,8 +15,6 @@ export class PhysicsEngine {
     #physicsCanvasContext;
     #physicsChannel;
     #userControlledShip = new PhysicsEntity(new Position(200, 200));
-    #cursorX;
-    #cursorY;
 
     constructor(physicsCanvas, physicsChannel) {
         this.#physicsCanvas = physicsCanvas;
@@ -93,12 +91,9 @@ export class PhysicsEngine {
         }
     }
 
-    onPointerMove({x, y}) {
-        this.#cursorX = x;
-        this.#cursorY = y;
-    }
-
     collision() {
+
+        const alreadyCollide = new WeakMap();
 
         for (const parent of this.#rocks.values()) {
             const parentVertices = parent.vertices;
@@ -106,7 +101,9 @@ export class PhysicsEngine {
             for (const child of this.#rocks.values()) {
                 if (parent === child) continue;
 
-                if (child.isColliding(this.#physicsCanvasContext, parentVertices, Rock.path(child.vertices))) {
+                if (alreadyCollide.has({parent, child}) || child.isColliding(this.#physicsCanvasContext, parentVertices, Rock.path(child.vertices))) {
+
+                    // alreadyCollide.set({parent, child}, true);
                     this.#physicsChannel.postMessage({
                         type: 'updateEntityColor',
                         id: parent.id,
@@ -130,15 +127,23 @@ export class PhysicsEngine {
     }
 
     mainLoop() {
+        // Measure frame time
+        const start = performance.now();
+
         this.#physicsCanvasContext.reset();
         this.collision();
         this.updateUserControlledShip();
         this.updateRocks();
 
+        // Measure frame time
+        const stop = performance.now();
+        const fps = `${(1000 / (stop - start)).toFixed(2)} cpu fps`;
 
-        this.#physicsCanvasContext.fillStyle = 'red';
-        this.#physicsCanvasContext.fillRect(this.#cursorX, this.#cursorY, 1, 1);
+        this.#physicsCanvasContext.fillStyle = '#a0937d';
+        this.#physicsCanvasContext.font = 'bold 16px Arial';
 
+        const textSize = this.#physicsCanvasContext.measureText(fps);
+        this.#physicsCanvasContext.fillText(fps, this.#physicsCanvas.width - textSize.width, textSize.fontBoundingBoxAscent * 2);
 
         // setTimeout(this.mainLoop.bind(this), 2000);
         requestAnimationFrame(this.mainLoop.bind(this));
