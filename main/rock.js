@@ -75,4 +75,8 @@ export class Rock extends GraphicEntity {
         ctx.fillStyle = '#FF0000';
         ctx.fillRect(object.position.x - 2, object.position.y - 2, 4, 4);
     }
+
+    draw(ctx) {
+        Rock.draw(ctx, this);
+    }
 }

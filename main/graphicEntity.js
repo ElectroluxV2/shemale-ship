@@ -15,4 +15,8 @@ export class GraphicEntity {
     get id() {
         return this.#id;
     }
+
+    draw(ctx) {
+        console.warn("Not implemented!");
+    }
 }

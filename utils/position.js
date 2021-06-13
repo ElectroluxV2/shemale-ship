@@ -1,11 +1,10 @@
-export class Position {
-    x;
-    y;
+import { Coord } from './coord.js';
+
+export class Position extends Coord {
     #angle;
 
     constructor(x = 0, y = 0, angle = 0) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
         this.angle = angle;
     }
 
