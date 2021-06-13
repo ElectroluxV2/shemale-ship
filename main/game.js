@@ -2,7 +2,6 @@ import { Rock } from './rock.js';
 import { Position } from '../utils/position.js';
 import { UserControlledShip } from './userControlledShip.js';
 import { WorldMap } from '../utils/worldMap.js';
-import { Coord } from '../utils/coord.js';
 
 export class Game {
     static #DRAW_CHUNK_GRID = true;
@@ -105,16 +104,20 @@ export class Game {
 
         this.#userControlledShip.draw(this.#mainCanvasContext);
 
+        if (Game.#DRAW_CHUNK_GRID) {
+            for (let i = 0; i < this.#mainCanvas.width; i+= WorldMap.CHUNK_SIZE){
+                for (let j = 0; j < this.#mainCanvas.height; j+= WorldMap.CHUNK_SIZE){
+                    this.#mainCanvasContext.beginPath();
+                    this.#mainCanvasContext.moveTo(i, j);
+                    this.#mainCanvasContext.lineTo(i + WorldMap.CHUNK_SIZE, j);
+                    this.#mainCanvasContext.lineTo(i + WorldMap.CHUNK_SIZE, j + WorldMap.CHUNK_SIZE);
+                    this.#mainCanvasContext.lineTo(i, j + WorldMap.CHUNK_SIZE);
+                    this.#mainCanvasContext.closePath();
+                    this.#mainCanvasContext.stroke();
+                }
+            }
 
-        // if (Game.#DRAW_CHUNK_GRID) {
-        //     for (let i = 0; i < this.#mainCanvas.width; i+= WorldMap.CHUNK_SIZE){
-        //         for (let j = 0; j < this.#mainCanvas.height; i+= WorldMap.CHUNK_SIZE){
-        //             // this.#mainCanvasContext.rect(i, j, WorldMap.CHUNK_SIZE, WorldMap.CHUNK_SIZE);
-        //             // this.#mainCanvasContext.stroke()
-        //         }
-        //     }
-        //
-        // }
+        }
 
         this.#mainCanvasContext.fillStyle = 'red';
         this.#mainCanvasContext.fillRect(this.#cursorX, this.#cursorY, 1, 1);

@@ -2,7 +2,7 @@ import { Matrix } from './matrix.js';
 import { Coord } from './coord.js';
 
 export class WorldMap {
-    static CHUNK_SIZE = 20;
+    static CHUNK_SIZE = 2000;
     #chunks = new Map();
     #entities = new Map();
 
@@ -32,9 +32,7 @@ export class WorldMap {
     updateEntityPosition(id, position) {
         const lastChunkIndex = Matrix.getIndex(this.#entities.get(id).position.toChunkCoord());
         // Update entity position
-        const entity = this.getChunkByIndex(lastChunkIndex).get(id);
-        console.log(this.getChunkByIndex(lastChunkIndex));
-        console.log(entity);
+        const entity = this.#entities.get(id);
         entity.position.import(position);
 
         const newChunkIndex = entity.position.toChunkCoord();
