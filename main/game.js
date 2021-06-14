@@ -22,7 +22,9 @@ export class Game {
         this.#physicsChannel = physicsChannel;
         this.#physicsChannel.onmessage = ({data} = event) => this[data.type](data);
 
-        for (let i = 1; i < 2; i++) {
+        this.worldMap.addEntity(this.#userControlledShip);
+
+        for (let i = 1; i < 20; i++) {
              this.createRock(new Rock(i, new Position(200 + i, 200 + i)));
         }
 
@@ -33,7 +35,7 @@ export class Game {
     }
 
     updateUserControlledShip({position}) {
-        this.#userControlledShip.position.import(position);
+        this.worldMap.updateEntityPosition(this.#userControlledShip.id, position);
     }
 
     updateEntityPosition({id, position}) {
@@ -135,5 +137,6 @@ export class Game {
         this.#mainCanvasContext.fillText(text, this.#mainCanvas.width - textSize.width, textSize.fontBoundingBoxAscent);
 
         requestAnimationFrame(this.mainLoop.bind(this));
+        // setTimeout(this.mainLoop.bind(this), 200);
     }
 }
