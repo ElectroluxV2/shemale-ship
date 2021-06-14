@@ -12,7 +12,7 @@ export class Rock extends GraphicEntity {
     rng;
     lineWidth = 3;
 
-    constructor(id = performance.now(), position = new Position()) {
+    constructor(id = Math.trunc(performance.now() * 1000000), position = new Position()) {
         super(id, position);
         this.rng = Random.getSeededRandom(this.id);
         this.#sides = Math.floor(this.rng() * 10) % 8 + 5;

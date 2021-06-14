@@ -2,7 +2,7 @@ import { Matrix } from './matrix.js';
 import { Coord } from './coord.js';
 
 export class WorldMap {
-    static CHUNK_SIZE = 2000;
+    static CHUNK_SIZE = 200;
     #chunks = new Map();
     #entities = new Map();
 
@@ -14,8 +14,11 @@ export class WorldMap {
         return this.#entities.values();
     }
 
-    addEntity(entity) {
+    get chunks() {
+        return this.#chunks;
+    }
 
+    addEntity(entity) {
         this.getChunkByWorldCoord(entity.position).set(entity.id, entity);
         this.#entities.set(entity.id, entity);
 
@@ -35,13 +38,20 @@ export class WorldMap {
         const entity = this.#entities.get(id);
         entity.position.import(position);
 
-        const newChunkIndex = entity.position.toChunkCoord();
+        const newChunkIndex = Matrix.getIndex(entity.position.toChunkCoord());
 
         if (lastChunkIndex !== newChunkIndex) {
             // Remove from previous chunk
-            this.getChunkByIndex(lastChunkIndex).delete(id);
+            if (!this.getChunkByIndex(lastChunkIndex).delete(id)) {
+                console.error("tf", this.getChunkByIndex(lastChunkIndex), id, this.#chunks);
+            }
+
             // Add to new chunk
             this.getChunkByIndex(newChunkIndex).set(id, entity);
+
+            console.log(this.getChunkByIndex(lastChunkIndex));
+            console.log(this.getChunkByIndex(newChunkIndex));
+            console.log(this.#chunks.size);
         }
     }
 

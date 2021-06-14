@@ -1,7 +1,10 @@
 export class Matrix {
-   static #size = Number.MAX_VALUE;
+   static #MAX_CONCURRENT_CHUNK = 10_000_000;
 
    static getIndex({x, y}) {
-      return x * Matrix.#size + y;
+      if (x === undefined) {
+         console.trace("co")
+      }
+      return Math.trunc(x) * Matrix.#MAX_CONCURRENT_CHUNK + Math.trunc(y);
    }
 }
