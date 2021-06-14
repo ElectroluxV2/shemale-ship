@@ -99,6 +99,11 @@ export class PhysicsEngine {
         const collide = new Map();
 
         for (const parent of this.#rocks.values()) {
+            this.#physicsChannel.postMessage({
+                type: 'updateEntityColor',
+                id: parent.id,
+                color: '#FFF'
+            });
             const parentVertices = parent.vertices;
 
             collide.set(parent, []);
