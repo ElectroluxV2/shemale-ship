@@ -13,7 +13,7 @@ export class PhysicsEngine {
     #physicsCanvas;
     #physicsCanvasContext;
     #physicsChannel;
-    #userControlledShip = new PhysicsEntity(new Position(200, 200));
+    #userControlledShip = new PhysicsEntity(UserControlledShip.ID, new Position(200, 200));
 
     constructor(physicsCanvas, physicsChannel) {
         this.#physicsCanvas = physicsCanvas;
@@ -55,7 +55,7 @@ export class PhysicsEngine {
         // Send result
         this.#physicsChannel.postMessage({
             type: 'updateEntityPosition',
-            id: UserControlledShip.ID,
+            id: this.#userControlledShip.id,
             position: this.#userControlledShip.position.export()
         });
     }
