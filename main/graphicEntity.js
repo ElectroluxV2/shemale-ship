@@ -5,6 +5,7 @@ export class GraphicEntity {
 
     constructor(id = null, position = new Position()) {
         this.#id = id ?? Math.trunc(performance.now() * 1000000);
+        Object.freeze(this.#id);
         this.#position = position;
     }
 

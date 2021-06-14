@@ -1,18 +1,18 @@
 import { Position } from '../utils/position.js';
 import { Vector } from '../utils/vector.js';
-import { Rock } from '../main/rock.js';
 
 export class PhysicsEntity {
-    position;
+    #id = null;
+    position = null;
     currAccX = 0;
     currAccY = 0;
     currAccAngular = 0;
-    #id;
     mass = 0;
 
     constructor(id, position = new Position(0, 0, 0)) {
-        this.position = position;
         this.#id = id;
+        Object.freeze(this.#id);
+        this.position = position;
     }
 
     angledVector() {
@@ -23,8 +23,6 @@ export class PhysicsEntity {
         return this.#id;
     }
 
-    #DEBUG = false;
-
     isColliding(ctx, points, path) {
         ctx.lineWidth = path.lineWidth;
 
@@ -33,11 +31,6 @@ export class PhysicsEntity {
                 return true;
             }
         }
-
-        // if (this.#DEBUG) {
-        //     ctx.strokeStyle = isInside ? 'rebeccapurple' : 'white'
-        //     ctx.stroke(path);
-        // }
 
         return false;
     }

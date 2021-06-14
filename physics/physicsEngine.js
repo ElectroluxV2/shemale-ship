@@ -5,7 +5,6 @@ import { Vector } from '../utils/vector.js';
 import { Random } from '../utils/random.js';
 import { PhysicsRock } from './physicsRock.js';
 import { Rock } from '../main/rock.js';
-import { Point } from '../utils/point.js';
 
 export class PhysicsEngine {
     static #resistance = 0.95;
@@ -55,7 +54,8 @@ export class PhysicsEngine {
         // TODO: Check if any changes to "visual" position (up to 2 digits precision changes) were made
         // Send result
         this.#physicsChannel.postMessage({
-            type: 'updateUserControlledShip',
+            type: 'updateEntityPosition',
+            id: UserControlledShip.ID,
             position: this.#userControlledShip.position.export()
         });
     }
@@ -68,7 +68,7 @@ export class PhysicsEngine {
 
         const RNG = Random.getSeededRandom(id);
         const randAngle = Math.floor( RNG() * 400 % 330 + 30);
-        const angled = Vector.j.multiply(Math.cos(randAngle * Math.PI / 180)).add(Vector.i.multiply(Math.sin(randAngle * Math.PI / 180))).multiply(60/mass);
+        const angled = Vector.j.multiply(Math.cos(randAngle * Math.PI / 180)).add(Vector.i.multiply(Math.sin(randAngle * Math.PI / 180))).multiply(60 / mass);
 
         rock.currAccX = angled.x;
         rock.currAccY = angled.y;

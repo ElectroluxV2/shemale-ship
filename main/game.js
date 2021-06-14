@@ -28,14 +28,7 @@ export class Game {
              this.createRock(new Rock(i, new Position(200 + i, 200 + i)));
         }
 
-        // this.createRock(new Rock(10, new Position(150, 150)));
-        // this.createRock(new Rock(33, new Position(200, 200)));
-        // this.createRock(new Rock(67, new Position(280, 280)));
         this.mainLoop();
-    }
-
-    updateUserControlledShip({position}) {
-        this.worldMap.updateEntityPosition(this.#userControlledShip.id, position);
     }
 
     updateEntityPosition({id, position}) {
@@ -53,7 +46,6 @@ export class Game {
 
     createRock(rock = new Rock(performance.now(), new Position(Math.random()*2000 % this.#window.innerWidth, Math.floor(Math.random()*2000 % this.#window.innerHeight)))) {
         this.worldMap.addEntity(rock)
-        // this.entities.set(rock.id, rock);
         this.#physicsChannel.postMessage({
             type: 'newRockCreated',
             id: rock.id,
@@ -104,9 +96,8 @@ export class Game {
             entity.draw(this.#mainCanvasContext);
         }
 
-        this.#userControlledShip.draw(this.#mainCanvasContext);
-
         if (Game.#DRAW_CHUNK_GRID) {
+            this.#mainCanvasContext.strokeStyle = "grey";
             for (let i = 0; i < this.#mainCanvas.width; i+= WorldMap.CHUNK_SIZE){
                 for (let j = 0; j < this.#mainCanvas.height; j+= WorldMap.CHUNK_SIZE){
                     this.#mainCanvasContext.beginPath();

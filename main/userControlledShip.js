@@ -3,11 +3,16 @@ import { Point } from '../utils/point.js';
 import { Polyfills } from '../utils/polyfills.js';
 
 export class UserControlledShip extends GraphicEntity {
+    static ID = -1;
     static thrustLeft = 0.8;
     static thrustRight = UserControlledShip.thrustLeft;
     static thrustForward = 1;
     static thrustBackward = 0.2;
     color = '#FFF';
+
+    constructor(position) {
+        super(UserControlledShip.ID, position);
+    }
 
     static vertices(object) {
         const result = [];
