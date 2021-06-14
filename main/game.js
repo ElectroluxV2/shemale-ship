@@ -1,10 +1,12 @@
 import { Rock } from './rock.js';
 import { Position } from '../utils/position.js';
 import { UserControlledShip } from './userControlledShip.js';
+import { WorldMap } from '../utils/worldMap.js';
 
 export class Game {
+    static #DRAW_CHUNK_GRID = true;
     keyboardStates = new Map();
-    entities = new Map();
+    worldMap = new WorldMap();
     #userControlledShip = new UserControlledShip();
     #mainCanvas;
     #mainCanvasContext;
@@ -20,29 +22,28 @@ export class Game {
         this.#physicsChannel = physicsChannel;
         this.#physicsChannel.onmessage = ({data} = event) => this[data.type](data);
 
+        this.worldMap.addEntity(this.#userControlledShip);
 
-         for (let i = 1; i < 200; i++) {
-
+        for (let i = 1; i < 20; i++) {
              this.createRock(new Rock(i, new Position(200 + i, 200 + i)));
-         }
+        }
 
         // this.createRock(new Rock(10, new Position(150, 150)));
         // this.createRock(new Rock(33, new Position(200, 200)));
         // this.createRock(new Rock(67, new Position(280, 280)));
-
         this.mainLoop();
     }
 
     updateUserControlledShip({position}) {
-        this.#userControlledShip.position.import(position);
+        this.worldMap.updateEntityPosition(this.#userControlledShip.id, position);
     }
 
     updateEntityPosition({id, position}) {
-        this.entities.get(id)?.position.import(position);
+        this.worldMap.updateEntityPosition(id, position);
     }
 
     updateEntityColor({id, color}) {
-        this.entities.get(id).color = color;
+        this.worldMap.updateEntityColor(id, color);
     }
 
     onPointerMove(x, y) {
@@ -51,7 +52,8 @@ export class Game {
     }
 
     createRock(rock = new Rock(performance.now(), new Position(Math.random()*2000 % this.#window.innerWidth, Math.floor(Math.random()*2000 % this.#window.innerHeight)))) {
-        this.entities.set(rock.id, rock);
+        this.worldMap.addEntity(rock)
+        // this.entities.set(rock.id, rock);
         this.#physicsChannel.postMessage({
             type: 'newRockCreated',
             id: rock.id,
@@ -98,11 +100,26 @@ export class Game {
 
         this.handleUserInput();
 
-        for (const rock of this.entities.values()) {
-            Rock.draw(this.#mainCanvasContext, rock);
+        for (const entity of this.worldMap.entities) {
+            entity.draw(this.#mainCanvasContext);
         }
 
         this.#userControlledShip.draw(this.#mainCanvasContext);
+
+        if (Game.#DRAW_CHUNK_GRID) {
+            for (let i = 0; i < this.#mainCanvas.width; i+= WorldMap.CHUNK_SIZE){
+                for (let j = 0; j < this.#mainCanvas.height; j+= WorldMap.CHUNK_SIZE){
+                    this.#mainCanvasContext.beginPath();
+                    this.#mainCanvasContext.moveTo(i, j);
+                    this.#mainCanvasContext.lineTo(i + WorldMap.CHUNK_SIZE, j);
+                    this.#mainCanvasContext.lineTo(i + WorldMap.CHUNK_SIZE, j + WorldMap.CHUNK_SIZE);
+                    this.#mainCanvasContext.lineTo(i, j + WorldMap.CHUNK_SIZE);
+                    this.#mainCanvasContext.closePath();
+                    this.#mainCanvasContext.stroke();
+                }
+            }
+
+        }
 
         this.#mainCanvasContext.fillStyle = 'red';
         this.#mainCanvasContext.fillRect(this.#cursorX, this.#cursorY, 1, 1);
@@ -120,5 +137,6 @@ export class Game {
         this.#mainCanvasContext.fillText(text, this.#mainCanvas.width - textSize.width, textSize.fontBoundingBoxAscent);
 
         requestAnimationFrame(this.mainLoop.bind(this));
+        // setTimeout(this.mainLoop.bind(this), 200);
     }
 }

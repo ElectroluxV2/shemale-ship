@@ -12,7 +12,7 @@ export class Rock extends GraphicEntity {
     rng;
     lineWidth = 3;
 
-    constructor(id = performance.now(), position = new Position()) {
+    constructor(id = Math.trunc(performance.now() * 1000000), position = new Position()) {
         super(id, position);
         this.rng = Random.getSeededRandom(this.id);
         this.#sides = Math.floor(this.rng() * 10) % 8 + 5;
@@ -74,5 +74,16 @@ export class Rock extends GraphicEntity {
         // center
         ctx.fillStyle = '#FF0000';
         ctx.fillRect(object.position.x - 2, object.position.y - 2, 4, 4);
+
+        ctx.fillStyle = '#a0937d';
+        ctx.font = 'bold 16px Arial';
+
+        const text = `${object.position.toChunkCoord().x} ${object.position.toChunkCoord().y}`;
+        const textSize = ctx.measureText(text);
+        ctx.fillText(text, object.position.x - textSize.width / 2, object.position.y + textSize.fontBoundingBoxAscent / 2);
+    }
+
+    draw(ctx) {
+        Rock.draw(ctx, this);
     }
 }

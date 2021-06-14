@@ -3,8 +3,8 @@ export class GraphicEntity {
     #id;
     #position;
 
-    constructor(id = performance.now(), position = new Position()) {
-        this.#id = id;
+    constructor(id = null, position = new Position()) {
+        this.#id = id ?? Math.trunc(performance.now() * 1000000);
         this.#position = position;
     }
 
@@ -14,5 +14,9 @@ export class GraphicEntity {
 
     get id() {
         return this.#id;
+    }
+
+    draw(ctx) {
+        console.warn("Not implemented!");
     }
 }
