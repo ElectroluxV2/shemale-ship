@@ -91,12 +91,7 @@ export class PhysicsEngine {
         }
     }
 
-    static PERFORMANCE_FIX_1 = true;
-
     collision() {
-
-        let saves = 0;
-        const collide = new Map();
 
         for (const parent of this.#rocks.values()) {
             this.#physicsChannel.postMessage({
@@ -106,19 +101,11 @@ export class PhysicsEngine {
             });
             const parentVertices = parent.vertices;
 
-            collide.set(parent, []);
 
             for (const child of this.#rocks.values()) {
                 if (parent === child) continue;
 
-                const parentHadAlreadyCollisionWithThisChild = PhysicsEngine.PERFORMANCE_FIX_1 ? collide.get(parent).includes(child) || collide.get(child)?.includes(parent) : false;
-
-                if (parentHadAlreadyCollisionWithThisChild) {
-                    saves++;
-                }
-
-                if (parentHadAlreadyCollisionWithThisChild || child.isColliding(this.#physicsCanvasContext, parentVertices, Rock.path(child.vertices))) {
-                    collide.get(parent).push(child);
+                if (child.isColliding(this.#physicsCanvasContext, parentVertices, Rock.path(child.vertices))) {
 
                     this.#physicsChannel.postMessage({
                         type: 'updateEntityColor',
@@ -140,8 +127,6 @@ export class PhysicsEngine {
                 this.#physicsCanvasContext.fillRect(vertex.x - 4, vertex.y - 4, 8, 8);
             }
         }
-
-        // console.log(saves)
     }
 
     i = 0;
