@@ -41,9 +41,7 @@ export class Rock extends GraphicEntity {
     }
 
     static vertices(object, origin = new Point(0, 0)) {
-        console.log(object.position.radians);
         const position = new Position(object.position.x - origin.x, object.position.y - origin.y, object.position.angle);
-        console.log(position.radians);
         const result = [];
         const first = new Point(position.x + object.size * Math.cos(0), position.y - object.size * Math.sin(0));
         result.push(Polyfills.rotate(position, first, position.radians));

@@ -16,7 +16,7 @@ export class UserControlledShip extends GraphicEntity {
     }
 
     static vertices(object, origin) {
-        const position = new Position(object.position.x - origin.x, object.position.y - origin.y, object.angle);
+        const position = new Position(object.position.x - origin.x, object.position.y - origin.y, object.position.angle);
         const result = [];
         result.push(Polyfills.rotate(position, new Point(position.x - 36, position.y + 25), -position.radians));
         result.push(Polyfills.rotate(position, new Point(position.x + 36, position.y + 25), -position.radians));
