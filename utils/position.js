@@ -22,6 +22,10 @@ export class Position extends Coord {
         };
     }
 
+    clone() {
+        return new Position(this.x, this.y, this.#angle);
+    }
+
     get radians() {
         return this.angle * Math.PI / 180;
     }

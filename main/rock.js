@@ -48,11 +48,11 @@ export class Rock extends GraphicEntity {
         const first = new Point(position.x + object.size * Math.cos(0), position.y - object.size * Math.sin(0));
         result.push(Polyfills.rotate(position, first, position.radians));
         for (let i = 0; i < object.sides - 1; i++) {
-            let tempX = object.size * Math.cos(object.angles[i] * Math.PI / 180) + object.position.x;
-            let tempY = object.size * Math.sin(object.angles[i] * Math.PI / 180) + object.position.y;
+            let tempX = object.size * Math.cos(object.angles[i] * Math.PI / 180) + position.x;
+            let tempY = object.size * Math.sin(object.angles[i] * Math.PI / 180) + position.y;
 
             const temp = new Point(tempX, tempY);
-            result.push(Polyfills.rotate(object.position, temp, object.position.radians));
+            result.push(Polyfills.rotate(position, temp, position.radians));
         }
         return result
     }
