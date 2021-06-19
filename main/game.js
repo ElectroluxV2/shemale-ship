@@ -2,16 +2,17 @@ import { Rock } from './rock.js';
 import { Position } from '../utils/position.js';
 import { UserControlledShip } from './userControlledShip.js';
 import { WorldMap } from '../utils/worldMap.js';
+import { Camera } from './camera.js';
 
 export class Game {
-    static #DRAW_CHUNK_GRID = true;
     keyboardStates = new Map();
     worldMap = new WorldMap();
     #userControlledShip = new UserControlledShip();
     #mainCanvas;
     #mainCanvasContext;
     #physicsChannel;
-    #window
+    #window;
+    #camera;
     #cursorX;
     #cursorY;
 
@@ -21,11 +22,12 @@ export class Game {
         this.#mainCanvasContext = this.#mainCanvas.getContext('2d');
         this.#physicsChannel = physicsChannel;
         this.#physicsChannel.onmessage = ({data} = event) => this[data.type](data);
+        this.#camera = new Camera(this.#mainCanvasContext, new Position(929, 490.50));
 
         this.worldMap.addEntity(this.#userControlledShip);
 
-        for (let i = 1; i < 20; i++) {
-             this.createRock(new Rock(i, new Position(200 + i, 200 + i)));
+        for (let i = 1; i < 2; i++) {
+             this.createRock(new Rock(i, new Position(300 + i, 300 + i)));
         }
 
         this.mainLoop();
@@ -33,6 +35,10 @@ export class Game {
 
     updateEntityPosition({id, position}) {
         this.worldMap.updateEntityPosition(id, position);
+
+        if (id === UserControlledShip.ID) {
+            this.#camera.position.import({x: position.x, y: position.y, angle: position.angle});
+        }
     }
 
     updateEntityColor({id, color}) {
@@ -91,26 +97,7 @@ export class Game {
         this.#mainCanvasContext.reset();
 
         this.handleUserInput();
-
-        for (const entity of this.worldMap.entities) {
-            entity.draw(this.#mainCanvasContext);
-        }
-
-        if (Game.#DRAW_CHUNK_GRID) {
-            this.#mainCanvasContext.strokeStyle = "grey";
-            for (let i = 0; i < this.#mainCanvas.width; i+= WorldMap.CHUNK_SIZE){
-                for (let j = 0; j < this.#mainCanvas.height; j+= WorldMap.CHUNK_SIZE){
-                    this.#mainCanvasContext.beginPath();
-                    this.#mainCanvasContext.moveTo(i, j);
-                    this.#mainCanvasContext.lineTo(i + WorldMap.CHUNK_SIZE, j);
-                    this.#mainCanvasContext.lineTo(i + WorldMap.CHUNK_SIZE, j + WorldMap.CHUNK_SIZE);
-                    this.#mainCanvasContext.lineTo(i, j + WorldMap.CHUNK_SIZE);
-                    this.#mainCanvasContext.closePath();
-                    this.#mainCanvasContext.stroke();
-                }
-            }
-
-        }
+        this.#camera.draw(this.worldMap);
 
         this.#mainCanvasContext.fillStyle = 'red';
         this.#mainCanvasContext.fillRect(this.#cursorX, this.#cursorY, 1, 1);

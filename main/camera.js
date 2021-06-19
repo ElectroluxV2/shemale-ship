@@ -1,39 +1,48 @@
 import { Position } from '../utils/position.js';
-import { WorldMap } from '../utils/worldMap.js';
 import { Coord } from '../utils/coord.js';
+import { WorldMap } from '../utils/worldMap.js';
+import { Point } from '../utils/point.js';
 
 export class Camera {
-    position;
+    static #DRAW_CHUNK_GRID = true;
+    #context;
     #canvas;
-    #context
-    constructor(canvas, position = new Position(0, 0,0)) {
+    position;
+
+    constructor(context, window, position = new Position(0, 0,0)) {
         this.position = position;
-        this.#canvas = canvas
-        this.#context = canvas.getContext('2d')
+        this.#context = context;
+        this.#canvas = context.canvas;
     }
 
-    draw(worldMap){
-        const width = this.#canvas.width;
-        const height = this.#canvas.height;
-
+    draw(worldMap) {
         const cameraChunk = this.position.toChunkCoord();
-        const renderDistance = 1;
+        const renderDistance = 3;
 
         for (let x = -renderDistance; x <= renderDistance; x++) {
             for (let y = -renderDistance; y <= renderDistance; y++) {
-                const chunk = worldMap.getChunkByChunkCoord(new Coord(cameraChunk.x - x, cameraChunk.y - y));
-                for (const entity of chunk.values()){
-                    entity.draw(this.#context, entity, this.position)
+                const coord = new Coord(cameraChunk.x - x, cameraChunk.y - y);
+                const chunk = worldMap.getChunkByChunkCoord(coord);
+
+                if (Camera.#DRAW_CHUNK_GRID) {
+                    this.#context.strokeStyle = '#FFF';
+                    this.#context.lineWidth = 0.05;
+                    this.#context.beginPath();
+                    this.#context.rect(coord.x * WorldMap.CHUNK_SIZE - this.position.x + (this.#canvas.width / 2),
+                        coord.y * WorldMap.CHUNK_SIZE - this.position.y + (this.#canvas.height / 2),
+                        WorldMap.CHUNK_SIZE,
+                        WorldMap.CHUNK_SIZE
+                    );
                 }
-            }
-        }
 
-        for(let i = this.position.x; i < this.position.x+width; i+= WorldMap.CHUNK_SIZE){
-            for(let j = this.position.y; j < this.position.y+height; j+= WorldMap.CHUNK_SIZE){
-                for (const entity of worldMap.getChunkByWorldCoord(new Coord(i, j)).values()) {
-
+                this.#context.stroke();
+                for (const entity of chunk.values()) {
+                    const point = new Point(- this.position.x + (this.#canvas.width / 2), - this.position.y + (this.#canvas.height / 2));
+                    entity.draw(this.#context, point);
                 }
             }
         }
     }
 }
+
+

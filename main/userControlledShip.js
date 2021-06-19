@@ -15,8 +15,8 @@ export class UserControlledShip extends GraphicEntity {
         super(UserControlledShip.ID, position);
     }
 
-    static vertices(object, origin) {
-        const position = new Position(object.position.x - origin.x, object.position.y - origin.y, object.position.angle);
+    static vertices(object, origin = new Point(0, 0)) {
+        const position = new Position(object.position.x + origin.x, object.position.y + origin.y, object.position.angle);
         const result = [];
         result.push(Polyfills.rotate(position, new Point(position.x - 36, position.y + 25), -position.radians));
         result.push(Polyfills.rotate(position, new Point(position.x + 36, position.y + 25), -position.radians));
@@ -48,13 +48,13 @@ export class UserControlledShip extends GraphicEntity {
 
         // center
         ctx.fillStyle = '#FF0000';
-        ctx.fillRect(object.position.x - 2 - origin.x, object.position.y - 2 - origin.y, 4, 4);
+        ctx.fillRect(object.position.x - 2 + origin.x, object.position.y - 2 + origin.y, 4, 4);
 
         ctx.fillStyle = '#a0937d';
         ctx.font = 'bold 16px Arial';
 
         const text = `${object.position.toChunkCoord().x} ${object.position.toChunkCoord().y}`;
         const textSize = ctx.measureText(text);
-        ctx.fillText(text, object.position.x - textSize.width / 2, object.position.y + textSize.fontBoundingBoxAscent / 2);
+        ctx.fillText(text, object.position.x + origin.x - textSize.width / 2, object.position.y + origin.y + textSize.fontBoundingBoxAscent / 2);
     }
 }

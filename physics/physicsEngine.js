@@ -13,13 +13,14 @@ export class PhysicsEngine {
     #physicsCanvas;
     #physicsCanvasContext;
     #physicsChannel;
-    #userControlledShip = new PhysicsEntity(UserControlledShip.ID, new Position(200, 200));
+    #userControlledShip;
 
     constructor(physicsCanvas, physicsChannel) {
         this.#physicsCanvas = physicsCanvas;
         this.#physicsCanvasContext = this.#physicsCanvas.getContext('2d');
         this.#physicsChannel = physicsChannel;
         this.#physicsChannel.onmessage = ({data} = event) => this[data.type](data);
+        this.#userControlledShip = new PhysicsEntity(UserControlledShip.ID, new Position(physicsCanvas.width/2, physicsCanvas.height/2))
         this.mainLoop();
     }
 
@@ -122,10 +123,10 @@ export class PhysicsEngine {
 
             }
 
-            for (const vertex of parent.vertices) {
-                this.#physicsCanvasContext.fillStyle = parent.id % 2 === 0 ? 'red' : 'green';
-                this.#physicsCanvasContext.fillRect(vertex.x - 4, vertex.y - 4, 8, 8);
-            }
+            // for (const vertex of parent.vertices) {
+            //     this.#physicsCanvasContext.fillStyle = parent.id % 2 === 0 ? 'red' : 'green';
+            //     this.#physicsCanvasContext.fillRect(vertex.x - 4, vertex.y - 4, 8, 8);
+            // }
         }
     }
 

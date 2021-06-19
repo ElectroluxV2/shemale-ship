@@ -3,6 +3,7 @@ import { Random } from '../utils/random.js';
 import { Position } from '../utils/position.js';
 import { Point } from '../utils/point.js'
 import { Polyfills } from '../utils/polyfills.js';
+import { WorldMap } from '../utils/worldMap.js';
 
 export class Rock extends GraphicEntity {
     color = '#FFF'; // TMP
@@ -41,7 +42,7 @@ export class Rock extends GraphicEntity {
     }
 
     static vertices(object, origin = new Point(0, 0)) {
-        const position = new Position(object.position.x - origin.x, object.position.y - origin.y, object.position.angle);
+        const position = new Position(object.position.x + origin.x, object.position.y + origin.y, object.position.angle);
         const result = [];
         const first = new Point(position.x + object.size * Math.cos(0), position.y - object.size * Math.sin(0));
         result.push(Polyfills.rotate(position, first, position.radians));
@@ -74,14 +75,14 @@ export class Rock extends GraphicEntity {
 
         // center
         ctx.fillStyle = '#FF0000';
-        ctx.fillRect(object.position.x - 2 - origin.x, object.position.y - 2 - origin.y, 4, 4);
+        ctx.fillRect(object.position.x - 2 + origin.x, object.position.y - 2 + origin.y, 4, 4);
 
         ctx.fillStyle = '#a0937d';
         ctx.font = 'bold 16px Arial';
 
         const text = `${object.position.toChunkCoord().x} ${object.position.toChunkCoord().y}`;
         const textSize = ctx.measureText(text);
-        ctx.fillText(text, object.position.x - textSize.width / 2, object.position.y + textSize.fontBoundingBoxAscent / 2);
+        ctx.fillText(text, object.position.x + origin.x - textSize.width / 2, object.position.y + origin.y + textSize.fontBoundingBoxAscent / 2);
     }
 
     draw(ctx, origin = new Point(0, 0)) {
