@@ -40,10 +40,13 @@ export class Rock extends GraphicEntity {
         return this.#sides;
     }
 
-    static vertices(object) {
-        const result = []
-        const first = new Point(object.position.x + object.size * Math.cos(0), object.position.y - object.size * Math.sin(0));
-        result.push(Polyfills.rotate(object.position, first, object.position.radians));
+    static vertices(object, origin = new Point(0, 0)) {
+        console.log(object.position.radians);
+        const position = new Position(object.position.x - origin.x, object.position.y - origin.y, object.position.angle);
+        console.log(position.radians);
+        const result = [];
+        const first = new Point(position.x + object.size * Math.cos(0), position.y - object.size * Math.sin(0));
+        result.push(Polyfills.rotate(position, first, position.radians));
         for (let i = 0; i < object.sides - 1; i++) {
             let tempX = object.size * Math.cos(object.angles[i] * Math.PI / 180) + object.position.x;
             let tempY = object.size * Math.sin(object.angles[i] * Math.PI / 180) + object.position.y;
@@ -65,15 +68,15 @@ export class Rock extends GraphicEntity {
         return path;
     }
 
-    static draw(ctx, object) {
-        const path = Rock.path(Rock.vertices(object));
+    static draw(ctx, object, origin) {
+        const path = Rock.path(Rock.vertices(object, origin));
         ctx.strokeStyle = object.color;
         ctx.lineWidth = path.lineWidth;
         ctx.stroke(path);
 
         // center
         ctx.fillStyle = '#FF0000';
-        ctx.fillRect(object.position.x - 2, object.position.y - 2, 4, 4);
+        ctx.fillRect(object.position.x - 2 - origin.x, object.position.y - 2 - origin.y, 4, 4);
 
         ctx.fillStyle = '#a0937d';
         ctx.font = 'bold 16px Arial';
@@ -83,7 +86,7 @@ export class Rock extends GraphicEntity {
         ctx.fillText(text, object.position.x - textSize.width / 2, object.position.y + textSize.fontBoundingBoxAscent / 2);
     }
 
-    draw(ctx) {
-        Rock.draw(ctx, this);
+    draw(ctx, origin = new Point(0, 0)) {
+        Rock.draw(ctx, this, origin);
     }
 }

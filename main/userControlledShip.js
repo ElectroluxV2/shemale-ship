@@ -1,6 +1,7 @@
 import { GraphicEntity } from './graphicEntity.js';
 import { Point } from '../utils/point.js';
 import { Polyfills } from '../utils/polyfills.js';
+import { Position } from '../utils/position.js';
 
 export class UserControlledShip extends GraphicEntity {
     static ID = -1;
@@ -14,11 +15,12 @@ export class UserControlledShip extends GraphicEntity {
         super(UserControlledShip.ID, position);
     }
 
-    static vertices(object) {
+    static vertices(object, origin) {
+        const position = new Position(object.position.x - origin.x, object.position.y - origin.y, object.angle);
         const result = [];
-        result.push(Polyfills.rotate(object.position, new Point(object.position.x - 36, object.position.y + 25), -object.position.radians));
-        result.push(Polyfills.rotate(object.position, new Point(object.position.x + 36, object.position.y + 25), -object.position.radians));
-        result.push(Polyfills.rotate(object.position, new Point(object.position.x, object.position.y - 65), -object.position.radians));
+        result.push(Polyfills.rotate(position, new Point(position.x - 36, position.y + 25), -position.radians));
+        result.push(Polyfills.rotate(position, new Point(position.x + 36, position.y + 25), -position.radians));
+        result.push(Polyfills.rotate(position, new Point(position.x, position.y - 65), -position.radians));
         return result;
     }
 
@@ -33,20 +35,20 @@ export class UserControlledShip extends GraphicEntity {
         return path;
     }
 
-    draw(ctx) {
-        UserControlledShip.draw(ctx, this);
+    draw(ctx, origin = new Point(0, 0)) {
+        UserControlledShip.draw(ctx, this, origin);
     }
 
-    static draw(ctx, object) {
+    static draw(ctx, object, origin) {
         // Body
-        const path = UserControlledShip.path(UserControlledShip.vertices(object));
+        const path = UserControlledShip.path(UserControlledShip.vertices(object, origin));
         ctx.strokeStyle = object.color;
         ctx.lineWidth = path.lineWidth;
         ctx.stroke(path);
 
         // center
         ctx.fillStyle = '#FF0000';
-        ctx.fillRect(object.position.x - 2, object.position.y - 2, 4, 4);
+        ctx.fillRect(object.position.x - 2 - origin.x, object.position.y - 2 - origin.y, 4, 4);
 
         ctx.fillStyle = '#a0937d';
         ctx.font = 'bold 16px Arial';
