@@ -136,7 +136,7 @@ export class PhysicsEngine {
         const start = performance.now();
 
         this.#physicsCanvasContext.reset();
-        //this.collision();
+        this.collision();
         this.updateUserControlledShip();
         this.updateRocks();
 

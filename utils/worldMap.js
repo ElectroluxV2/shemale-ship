@@ -4,7 +4,6 @@ import { Coord } from './coord.js';
 import { Random } from './random.js';
 import { Position } from './position.js';
 
-
 export class WorldMap {
     static CHUNK_SIZE = 200;
     #chunks = new Map();

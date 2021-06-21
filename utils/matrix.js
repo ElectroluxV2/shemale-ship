@@ -1,7 +1,7 @@
 import { Coord } from './coord.js';
 
 export class Matrix {
-   static #MAX_CONCURRENT_CHUNK = 10_000_000;
+   static #MAX_CONCURRENT_CHUNK = 100_000_000;
 
    static getIndex({x, y}) {
       return Math.trunc(x) * Matrix.#MAX_CONCURRENT_CHUNK + Math.trunc(y);
