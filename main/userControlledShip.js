@@ -44,6 +44,8 @@ export class UserControlledShip extends GraphicEntity {
         const path = UserControlledShip.path(UserControlledShip.vertices(object, origin));
         ctx.strokeStyle = object.color;
         ctx.lineWidth = path.lineWidth;
+        ctx.fillStyle = '#222';
+        ctx.fill(path)
         ctx.stroke(path);
 
         // center

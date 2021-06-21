@@ -9,7 +9,4 @@ export class Chunk {
         this.y = y;
     }
 
-    static getChunkByPosition(position) {
-        return new Chunk();
-    }
 }

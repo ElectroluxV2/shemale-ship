@@ -1,5 +1,9 @@
+import { BackgroundStar } from '../main/backgroundStar.js';
 import { Matrix } from './matrix.js';
 import { Coord } from './coord.js';
+import { Random } from './random.js';
+import { Position } from './position.js';
+
 
 export class WorldMap {
     static CHUNK_SIZE = 200;
@@ -48,7 +52,7 @@ export class WorldMap {
             }
 
             // Add to new chunk
-            this.getChunkByIndex(newChunkIndex).set(id, entity);
+            (this.getChunkByIndex(newChunkIndex) ?? this.generateChunk(entity.position.toChunkCoord())).set(id, entity);
         }
     }
 
@@ -66,8 +70,9 @@ export class WorldMap {
      * @param coord {Coord} World Coordinate
      */
     getChunkByWorldCoord(coord) {
-        const index = Matrix.getIndex(coord.toChunkCoord());
-        return this.getChunkByIndex(index);
+        const chunkCoord = coord.toChunkCoord();
+        const index = Matrix.getIndex(chunkCoord);
+        return this.getChunkByIndex(index) ?? this.generateChunk(chunkCoord);
     }
 
     /**
@@ -77,7 +82,7 @@ export class WorldMap {
      */
     getChunkByChunkCoord(coord) {
         const index = this.getChunkIndexByChunkCoord(coord);
-        return this.getChunkByIndex(index);
+        return this.getChunkByIndex(index) ?? this.generateChunk(coord);
     }
 
     /**
@@ -90,15 +95,40 @@ export class WorldMap {
     }
 
     /**
-     * Will create new chunk if not exists
+     * You have to create chunk by yourself if this method fails
      * @param index {Number} Index of chunk
-     * @returns {Map} chunk
+     * @returns {Map|null} chunk
      */
     getChunkByIndex(index) {
-        if (!this.#chunks.has(index)) {
-            this.#chunks.set(index, new Map())
+        return this.#chunks.get(index) ?? null;
+    }
+
+    /**
+     * Called when chunk is needed and was never accessed before
+     * @param chunkCoord {Coord} Chunk's coord
+     * @return {Map} Chunk
+     */
+    generateChunk(chunkCoord) {
+        const MAX_STARS = 5;
+        const MIN_STARS = 0;
+        const index = Matrix.getIndex(chunkCoord);
+        const srng = Random.getSeededRandom(index);
+        const rir = (max, min) => srng() * (max - min) + min;
+        const worldCoordMin = new Coord(chunkCoord.x * WorldMap.CHUNK_SIZE, chunkCoord.y * WorldMap.CHUNK_SIZE);
+        const worldCoordMax = new Coord(worldCoordMin.x + WorldMap.CHUNK_SIZE, worldCoordMin.y + WorldMap.CHUNK_SIZE);
+
+        // console.info(`Preparing stars for Chunk#${index} with coord[${chunkCoord.x},${chunkCoord.y}]`, rir(MAX_STARS, MIN_STARS));
+        this.#chunks.set(index, new Map());
+        //rir(MAX_STARS, MIN_STARS)
+        for (let i = 0; i < 1; i++) {
+            const x = rir(worldCoordMin.x, worldCoordMax.x);
+            const y = rir(worldCoordMin.y, worldCoordMax.y);
+            const angle = rir(0, 360);
+
+            // console.log('pos', x, y, angle);
+            this.addEntity(new BackgroundStar(new Position(x, y, angle)));
         }
 
-        return this.#chunks.get(index);
+        return this.#chunks.get(index)
     }
 }

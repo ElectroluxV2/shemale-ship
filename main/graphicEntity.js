@@ -18,6 +18,6 @@ export class GraphicEntity {
     }
 
     draw(ctx) {
-        console.warn("Not implemented!");
+        console.warn('Not implemented!');
     }
 }
