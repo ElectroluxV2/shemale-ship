@@ -1,4 +1,4 @@
-import { WorldMap } from './worldMap.js';
+import { Chunk } from './chunk.js';
 
 export class Coord {
     x;
@@ -10,8 +10,8 @@ export class Coord {
     }
 
     toChunkCoord() {
-        const resultX = Math.floor(this.x / WorldMap.CHUNK_SIZE);
-        const resultY = Math.floor(this.y / WorldMap.CHUNK_SIZE);
+        const resultX = Math.floor(this.x / Chunk.CHUNK_SIZE);
+        const resultY = Math.floor(this.y / Chunk.CHUNK_SIZE);
         return new Coord(resultX, resultY)
     }
 }

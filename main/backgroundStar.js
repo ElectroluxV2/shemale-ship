@@ -1,25 +1,13 @@
-// import { GraphicEntity } from './graphicEntity.js';
+import { GraphicEntity } from './graphicEntity.js';
 import { Point } from '../utils/point.js';
 import { Position } from '../utils/position.js';
 import { Polyfills } from '../utils/polyfills.js';
 
-export class BackgroundStar {
-    #id;
-    #position;
+export class BackgroundStar extends GraphicEntity {
     size = 6;
 
     constructor(position = new Position()) {
-        this.#id = Math.trunc(performance.now() * 1000000);
-        Object.freeze(this.#id);
-        this.#position = position;
-    }
-
-    get position() {
-        return this.#position;
-    }
-
-    get id() {
-        return this.#id;
+        super(Math.trunc(performance.now() * 1000000), position);
     }
 
     static vertices(object, origin = new Point(0, 0)) {
@@ -51,8 +39,8 @@ export class BackgroundStar {
 
     static draw(ctx, object, origin) {
         const gradient = ctx.createRadialGradient(object.position.x + origin.x, object.position.y + origin.y, 1,object.position.x + origin.x, object.position.y + origin.y, 30)
-        gradient.addColorStop(0, '#FFFFFF30')
-        gradient.addColorStop(1, 'transparent')
+        gradient.addColorStop(0, '#FFFFFF30');
+        gradient.addColorStop(1, 'transparent');
         ctx.fillStyle = gradient;
         ctx.beginPath();
         ctx.arc(object.position.x + origin.x, object.position.y + origin.y, object.size * object.size, 0, 2 * Math.PI);
