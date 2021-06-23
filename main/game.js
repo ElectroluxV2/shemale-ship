@@ -27,7 +27,7 @@ export class Game {
         this.worldMap.addEntity(this.#userControlledShip);
 
         for (let i = 1; i < 20; i++) {
-            //this.createRock(new Rock(i, new Position(300 + i, 300 + i)));
+            this.createRock(new Rock(i, new Position(300 + i, 300 + i)));
         }
 
         this.mainLoop();
