@@ -4,12 +4,16 @@ import { Random } from '../utils/random.js';
 import { Coord } from '../objects/coord.js';
 import { Point } from '../objects/point.js';
 import { PhysicsData } from '../objects/physicsData.js';
+import { Chunk } from '../objects/chunk.js';
 
-export class Entity {
+export class Entity extends EventTarget {
+    static EVENT_ON_CHUNK_CHANGE = 'EVENT_ON_CHUNK_CHANGE';
     #id;
     #position;
     #random;
     #physicsData;
+    #onChunkChange;
+    chunkCoord;
 
     /**
      * Creates new entity with id and position
@@ -17,11 +21,36 @@ export class Entity {
      * @param position {Position} Initial position of object
      */
     constructor(id = null, position = new Position()) {
+        super();
         this.#id = id ?? Math.trunc(performance.now() * 1000000);
         Object.freeze(this.#id);
         this.#position = position;
         this.#random = Random.getSeededRandom(this.#id);
         this.#physicsData = new PhysicsData();
+
+        this.chunkCoord = {
+            now: new Coord(),
+            old: new Coord()
+        };
+
+        this.#onChunkChange = new CustomEvent(Entity.EVENT_ON_CHUNK_CHANGE, {
+            detail: {
+                entity: this
+            }
+        });
+
+        this.position.addEventListener(Coord.EVENT_CHANGE, this.#onCoordChange.bind(this));
+    }
+
+    #onCoordChange() {
+        this.chunkCoord.old = this.chunkCoord.now;
+        this.chunkCoord.now = Chunk.toChunkCoord(this.position);
+
+        if (this.chunkCoord.old.x === this.chunkCoord.now.x && this.chunkCoord.old.y === this.chunkCoord.now.y) {
+            return;
+        }
+
+        this.dispatchEvent(this.#onChunkChange);
     }
 
     /**

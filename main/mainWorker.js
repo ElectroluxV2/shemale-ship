@@ -1,8 +1,6 @@
 import { Polyfills } from './utils/polyfills.js';
 import { Game } from './game.js';
 
-console.log('a');
-
 const workerContext = {
     game: null,
     mainCanvas: null,

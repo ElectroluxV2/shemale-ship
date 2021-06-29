@@ -25,23 +25,21 @@ export class Game {
         this.#worldMap = new WorldMap();
         this.#userControlledShip = new UserControlledShip(new Position(this.#window.innerWidth / 3, this.#window.innerHeight / 3));
         this.#camera = new Camera(this.#mainCanvasContext);
-        this.#camera.position = this.#userControlledShip.position;
         this.#physicsEngine = new PhysicsEngine(physicsCanvas, this.#worldMap);
+
+        // Update starting camera position
+        this.#camera.position.import(this.#userControlledShip.position.export());
+
+        // Assign player position to camera
+        this.#userControlledShip.position.addEventListener(Coord.EVENT_CHANGE, ({detail: {coord}}) => {
+            this.#camera.position.import(coord);
+        });
+
+        // Spawn player
+        this.#worldMap.addEntity(this.#userControlledShip);
 
         // BEGIN TEST
 
-        // Blocks player movement
-        // this.#userControlledShip.position.setHandler = () => {
-        //     return true;
-        // }
-
-        this.#userControlledShip.position.onchange = position => {
-            this.#camera.position = position;
-        }
-
-        console.log(this.#userControlledShip);
-
-        this.#worldMap.addEntity(this.#userControlledShip);
 
         for (let i = 1; i < 20; i++) {
             // this.#worldMap.addEntity(new Rock(i, new Position(300 + i, 300 + i)));

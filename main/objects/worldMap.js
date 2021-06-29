@@ -1,6 +1,7 @@
 import { Matrix } from '../utils/matrix.js';
 import { Chunk } from './chunk.js';
 import { Coord } from './coord.js';
+import { Entity } from '../entities/entity.js';
 
 export class WorldMap {
     #chunks = new Map();
@@ -15,38 +16,44 @@ export class WorldMap {
     }
 
     addEntity(entity) {
+        this.getChunkByWorldCoord(entity.position).set(entity.id, entity);
         this.#entities.set(entity.id, entity);
-        this.updateEntityPosition(entity.id, entity.position, true);
+        entity.addEventListener(Entity.EVENT_ON_CHUNK_CHANGE, this.updateEntityPositionListener.bind(this));
     }
 
     removeEntity(id) {
-        const entityCoord = this.#entities.get(id).position;
+        const entity = this.#entities.get(id);
+        entity.removeEventListener(Entity.EVENT_ON_CHUNK_CHANGE, this.updateEntityPositionListener);
+        const entityCoord = entity.position;
         this.getChunkByWorldCoord(entityCoord).delete(id);
         this.#entities.delete(id);
     }
 
-    updateEntityPosition(id, position, force = false) {
+    updateEntityPositionListener({detail: {entity}}) {
+        this.updateEntityPosition(entity);
+    }
+
+    updateEntityPosition({id, position, chunkCoord: {old, now}}) {
         // Get last chunk based on last position
-        const lastChunkIndex = this.getChunkIndexByChunkCoord(Chunk.toChunkCoord(this.#entities.get(id).position));
+        const lastChunkIndex = this.getChunkIndexByChunkCoord(old);
 
         // Update entity position
         const entity = this.#entities.get(id);
-        entity.position.onchange = null;
-        entity.position = position;
-        entity.position.onchange = newPosition => this.updateEntityPosition(id, newPosition);
+        entity.position.import(position);
 
         // Get new chunk based on new position
-        const newChunkIndex = this.getChunkIndexByChunkCoord(Chunk.toChunkCoord(this.#entities.get(id).position));
+        const newChunkIndex = this.getChunkIndexByChunkCoord(now);
 
         // If chunk has changed
-        if (force || lastChunkIndex !== newChunkIndex) {
+        if (lastChunkIndex !== newChunkIndex) {
+
             // Remove from previous chunk
-            if (!force && !this.getChunkByIndex(lastChunkIndex).delete(id)) {
+            if (!this.getChunkByIndex(lastChunkIndex).delete(id)) {
                 console.error("tf", this.getChunkByIndex(lastChunkIndex), id, this.#chunks);
             }
 
             // Add to new chunk
-            (this.getChunkByIndex(newChunkIndex) ?? this.generateChunk(Chunk.toChunkCoord(this.#entities.get(id).position))).set(id, entity);
+            (this.getChunkByIndex(newChunkIndex) ?? this.generateChunk(now)).set(id, entity);
         }
     }
 

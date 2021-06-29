@@ -6,8 +6,6 @@ const mainWorker = new Worker('./main/mainWorker.js', {
     type: 'module'
 });
 
-console.log(mainWorker)
-
 // Transfer ownership of variables
 const mainCanvas = document.getElementById('mainCanvas').transferControlToOffscreen();
 const physicsCanvas = document.getElementById('physicsCanvas').transferControlToOffscreen();
