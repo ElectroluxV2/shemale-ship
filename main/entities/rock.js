@@ -3,6 +3,7 @@ import { Position } from '../objects/position.js';
 import { Point } from '../objects/point.js';
 import { Polyfills } from '../utils/polyfills.js';
 import { Chunk } from '../objects/chunk.js';
+import { Vector } from '../objects/vector.js';
 
 export class Rock extends Entity {
     #sides;
@@ -15,6 +16,14 @@ export class Rock extends Entity {
         this.#sides = Math.floor(this.random() * 10) % 8 + 5;
         this.#size = this.#sides * 10;
         this.#angles = this.#generateRandomAngles();
+        this.physicsData.mass = this.#size;
+
+        const randAngle = Math.floor(this.random() * 400 % 330 + 30);
+        const angled = Vector.j.multiply(Math.cos(randAngle * Math.PI / 180)).add(Vector.i.multiply(Math.sin(randAngle * Math.PI / 180))).multiply(60 / this.physicsData.mass);
+
+        this.physicsData.acceleration.x = angled.x;
+        this.physicsData.acceleration.y = angled.y;
+        this.physicsData.acceleration.angular = randAngle / 100 * (50 / this.physicsData.mass);
     }
 
     #generateRandomAngles() {
@@ -75,6 +84,8 @@ export class Rock extends Entity {
     }
 
     tick() {
-
+        this.position.x += this.physicsData.acceleration.x;
+        this.position.y -= this.physicsData.acceleration.y;
+        this.position.angle += this.physicsData.acceleration.angular;
     }
 }
