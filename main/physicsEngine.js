@@ -1,4 +1,5 @@
 import { WorldMap } from './objects/worldMap.js';
+// import { Entity } from './entities/entity.js';
 
 export class PhysicsEngine {
     static resistance = 0.95;
@@ -19,7 +20,25 @@ export class PhysicsEngine {
     }
 
     collision() {
+        // TODO: threads
+        for (const parent of this.#worldMap.entities) {
+            // if (!parent instanceof Entity) continue;
 
+            parent.color = '#FFF';
+            const parentVertices = parent.vertices();
+
+            for (const child of this.#worldMap.entities) {
+                // if (!child instanceof Entity) continue;
+                if (parent === child) continue;
+
+                // TODO: simple hit box
+                if (child.isColliding(this.#physicsCanvasContext, parentVertices, child.path(child.vertices()))) {
+
+                    parent.color = '#db3992';
+                    child.color = '#db3992';
+                }
+            }
+        }
     }
 
     tick() {

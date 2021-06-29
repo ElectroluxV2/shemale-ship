@@ -8,7 +8,7 @@ import { Vector } from '../objects/vector.js';
 export class Rock extends Entity {
     #sides;
     #size;
-    #color = '#FFF';
+    color = '#FFF';
     #angles = [];
 
     constructor(id = null, position = new Position()) {
@@ -66,7 +66,7 @@ export class Rock extends Entity {
 
     draw(ctx, origin) {
         const path = this.path(this.vertices(origin));
-        ctx.strokeStyle = this.#color;
+        ctx.strokeStyle = this.color;
         ctx.lineWidth = path.lineWidth;
         ctx.stroke(path);
 
