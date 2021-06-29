@@ -15,8 +15,8 @@ export class WorldMap {
     }
 
     addEntity(entity) {
-        this.getChunkByWorldCoord(entity.position).set(entity.id, entity);
         this.#entities.set(entity.id, entity);
+        this.updateEntityPosition(entity.id, entity.position, true);
     }
 
     removeEntity(id) {
@@ -25,26 +25,28 @@ export class WorldMap {
         this.#entities.delete(id);
     }
 
-    updateEntityPosition(id, position) {
+    updateEntityPosition(id, position, force = false) {
         // Get last chunk based on last position
-        const lastChunkIndex = this.getChunkIndexByChunkCoord(this.#entities.get(id).position.toChunkCoord());
+        const lastChunkIndex = this.getChunkIndexByChunkCoord(Chunk.toChunkCoord(this.#entities.get(id).position));
 
         // Update entity position
         const entity = this.#entities.get(id);
-        entity.position.import(position);
+        entity.position.onchange = null;
+        entity.position = position;
+        entity.position.onchange = newPosition => this.updateEntityPosition(id, newPosition);
 
         // Get new chunk based on new position
-        const newChunkIndex = this.getChunkIndexByChunkCoord(entity.position.toChunkCoord());
+        const newChunkIndex = this.getChunkIndexByChunkCoord(Chunk.toChunkCoord(this.#entities.get(id).position));
 
         // If chunk has changed
-        if (lastChunkIndex !== newChunkIndex) {
+        if (force || lastChunkIndex !== newChunkIndex) {
             // Remove from previous chunk
-            if (!this.getChunkByIndex(lastChunkIndex).delete(id)) {
+            if (!force && !this.getChunkByIndex(lastChunkIndex).delete(id)) {
                 console.error("tf", this.getChunkByIndex(lastChunkIndex), id, this.#chunks);
             }
 
             // Add to new chunk
-            (this.getChunkByIndex(newChunkIndex) ?? this.generateChunk(entity.position.toChunkCoord())).set(id, entity);
+            (this.getChunkByIndex(newChunkIndex) ?? this.generateChunk(Chunk.toChunkCoord(this.#entities.get(id).position))).set(id, entity);
         }
     }
 

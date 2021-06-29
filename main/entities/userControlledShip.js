@@ -59,11 +59,19 @@ export class UserControlledShip extends Entity {
     }
 
     tick() {
-        this.position.x += this.physicsData.acceleration.x;
-        this.physicsData.acceleration.x *= PhysicsEngine.resistance;
-        this.position.y -= this.physicsData.acceleration.y;
-        this.physicsData.acceleration.y *= PhysicsEngine.resistance;
-        this.position.angle += this.physicsData.acceleration.angular;
-        this.physicsData.acceleration.angular *= PhysicsEngine.angularResistance;
+        if (Math.abs(this.physicsData.acceleration.x) > Number.EPSILON) {
+            this.position.x += this.physicsData.acceleration.x;
+            this.physicsData.acceleration.x *= PhysicsEngine.resistance;
+        }
+
+        if (Math.abs(this.physicsData.acceleration.y) > Number.EPSILON) {
+            this.position.y -= this.physicsData.acceleration.y;
+            this.physicsData.acceleration.y *= PhysicsEngine.resistance;
+        }
+
+        if (Math.abs(this.physicsData.acceleration.angular) > Number.EPSILON) {
+            this.position.angle += this.physicsData.acceleration.angular;
+            this.physicsData.acceleration.angular *= PhysicsEngine.angularResistance;
+        }
     }
 }
