@@ -1,95 +1,75 @@
-import { Rock } from './rock.js';
-import { Position } from '../utils/position.js';
-import { UserControlledShip } from './userControlledShip.js';
-import { WorldMap } from '../utils/worldMap.js';
-import { Camera } from './camera.js';
+import { Coord } from './objects/coord.js';
+import { UserControlledShip } from './entities/userControlledShip.js';
+import { Position } from './objects/position.js';
+import { Camera } from './objects/camera.js';
+import { PhysicsEngine } from './physicsEngine.js';
+import { Rock } from './entities/rock.js';
+import { WorldMap } from './objects/worldMap.js';
 
 export class Game {
-    keyboardStates = new Map();
-    worldMap = new WorldMap();
-    #userControlledShip = new UserControlledShip();
+    keyboardStates;
+    #worldMap;
+    #userControlledShip;
     #mainCanvas;
     #mainCanvasContext;
-    #physicsChannel;
     #window;
     #camera;
-    #cursorX;
-    #cursorY;
+    #cursor;
+    #physicsEngine;
 
-    constructor(mainCanvas, window, physicsChannel) {
-        this.#mainCanvas = mainCanvas;
+    constructor(mainCanvas, physicsCanvas, window) {
+        console.log('game');
+
         this.#window = window;
-        this.#mainCanvasContext = this.#mainCanvas.getContext('2d');
-        this.#physicsChannel = physicsChannel;
-        this.#physicsChannel.onmessage = ({data} = event) => this[data.type](data);
-        this.#camera = new Camera(this.#mainCanvasContext, new Position(929, 490.50));
+        this.#mainCanvas = mainCanvas;
+        this.#mainCanvasContext = mainCanvas.getContext('2d');
+        this.keyboardStates = new Map();
+        this.#worldMap = new WorldMap();
+        this.#userControlledShip = new UserControlledShip(new Position(this.#window.innerWidth / 3, this.#window.innerHeight / 3));
+        this.#camera = new Camera(this.#mainCanvasContext, new Position(this.#window.innerWidth / 2, this.#window.innerHeight / 2));
+        this.#physicsEngine = new PhysicsEngine(physicsCanvas, this.#worldMap);
 
-        this.worldMap.addEntity(this.#userControlledShip);
+        // BEGIN TEST
+        this.#userControlledShip.position;
+        console.log(this.#userControlledShip);
+
+        this.#worldMap.addEntity(this.#userControlledShip);
 
         for (let i = 1; i < 20; i++) {
-            this.createRock(new Rock(i, new Position(300 + i, 300 + i)));
+            this.#worldMap.addEntity(new Rock(i, new Position(300 + i, 300 + i)));
         }
 
         this.mainLoop();
     }
 
-    updateEntityPosition({id, position}) {
-        this.worldMap.updateEntityPosition(id, position);
-
-        if (id === UserControlledShip.ID) {
-            this.#camera.position.import({x: position.x, y: position.y, angle: position.angle});
-        }
-    }
-
-    updateEntityColor({id, color}) {
-        this.worldMap.updateEntityColor(id, color);
-    }
-
-    onPointerMove(x, y) {
-        this.#cursorX = x;
-        this.#cursorY = y;
-    }
-
-    createRock(rock = new Rock(performance.now(), new Position(Math.random()*2000 % this.#window.innerWidth, Math.floor(Math.random()*2000 % this.#window.innerHeight)))) {
-        this.worldMap.addEntity(rock)
-        this.#physicsChannel.postMessage({
-            type: 'newRockCreated',
-            id: rock.id,
-            position: rock.position.export(),
-            mass: rock.size
-        });
-    }
-
     handleUserInput() {
         if (this.keyboardStates['w'] || this.keyboardStates['W']) {
-            this.#physicsChannel.postMessage({
-                type: 'onUserControlledShipAction',
-                action: 'moveW'
-            });
+            const angled = this.#userControlledShip.angledVector().multiply(UserControlledShip.thrustForward);
+            this.#userControlledShip.physicsData.acceleration.x += angled.x;
+            this.#userControlledShip.physicsData.acceleration.y += angled.y;
         }
 
         if (this.keyboardStates['s'] || this.keyboardStates['S']) {
-            this.#physicsChannel.postMessage({
-                type: 'onUserControlledShipAction',
-                action: 'moveS'
-            });
+            const angled = this.#userControlledShip.angledVector().reverse().multiply(UserControlledShip.thrustBackward);
+            this.#userControlledShip.physicsData.acceleration.x += angled.x;
+            this.#userControlledShip.physicsData.acceleration.y += angled.y;
         }
 
         if (this.keyboardStates['a'] || this.keyboardStates['A']) {
-            this.#physicsChannel.postMessage({
-                type: 'onUserControlledShipAction',
-                action: 'moveA'
-            });
+            this.#userControlledShip.physicsData.acceleration.angular -= UserControlledShip.thrustLeft;
         }
 
         if (this.keyboardStates['d'] || this.keyboardStates['D']) {
-            this.#physicsChannel.postMessage({
-                type: 'onUserControlledShipAction',
-                action: 'moveD'
-            });
+            this.#userControlledShip.physicsData.acceleration.angular += UserControlledShip.thrustRight;
         }
+
     }
 
+    onPointerMove(x, y) {
+        this.#cursor = new Coord(x, y);
+    }
+
+    frames = 0;
     mainLoop() {
         // Measure frame time
         const start = performance.now();
@@ -97,10 +77,13 @@ export class Game {
         this.#mainCanvasContext.reset();
 
         this.handleUserInput();
-        this.#camera.draw(this.worldMap);
+
+        this.#physicsEngine.tick();
+
+        this.#camera.draw(this.#worldMap);
 
         this.#mainCanvasContext.fillStyle = 'red';
-        this.#mainCanvasContext.fillRect(this.#cursorX, this.#cursorY, 1, 1);
+        this.#mainCanvasContext.fillRect(this.#cursor?.x ?? 0, this.#cursor?.y ?? 0, 1, 1);
 
         // Measure frame time
         const stop = performance.now();
@@ -115,6 +98,6 @@ export class Game {
         this.#mainCanvasContext.fillText(text, this.#mainCanvas.width - textSize.width, textSize.fontBoundingBoxAscent);
 
         requestAnimationFrame(this.mainLoop.bind(this));
-        // setTimeout(this.mainLoop.bind(this), 200);
+        //frames++ < 3 && setTimeout(this.mainLoop.bind(this), 200);
     }
 }

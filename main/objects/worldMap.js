@@ -1,12 +1,10 @@
-import { Matrix } from './matrix.js';
-import { Coord } from './coord.js';
+import { Matrix } from '../utils/matrix.js';
 import { Chunk } from './chunk.js';
+import { Coord } from './coord.js';
 
 export class WorldMap {
     #chunks = new Map();
     #entities = new Map();
-
-    constructor() { }
 
     get entities() {
         return this.#entities.values();
@@ -64,7 +62,7 @@ export class WorldMap {
      * @param coord {Coord} World Coordinate
      */
     getChunkByWorldCoord(coord) {
-        const chunkCoord = coord.toChunkCoord();
+        const chunkCoord = Chunk.toChunkCoord(coord);
         const index = Matrix.getIndex(chunkCoord);
         return this.getChunkByIndex(index) ?? this.generateChunk(chunkCoord);
     }

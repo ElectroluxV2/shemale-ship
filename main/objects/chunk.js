@@ -1,8 +1,8 @@
-import { Matrix } from './matrix.js';
-import { Random } from './random.js';
+import { Random } from '../utils/random.js';
 import { Coord } from './coord.js';
-import { BackgroundStar } from '../main/backgroundStar.js';
+import { Matrix } from '../utils/matrix.js';
 import { Position } from './position.js';
+import { BackgroundStar } from '../entities/backgroundStar.js';
 
 export class Chunk extends Map {
     static DEBUG = false;
@@ -44,6 +44,35 @@ export class Chunk extends Map {
     }
 
     /**
+     * Transforms world coord to chunk coord
+     * @param x {Number} X-axis
+     * @param y {Number} Y-axis
+     * @returns {Coord} Chunk based coord
+     */
+    static toChunkCoord({x, y}) {
+        const resultX = Math.floor(x / Chunk.CHUNK_SIZE);
+        const resultY = Math.floor(y / Chunk.CHUNK_SIZE);
+        return new Coord(resultX, resultY);
+    }
+
+    /**
+     * Adds entity to Chunk
+     * @param entity {Entity} Entity to add
+     */
+    addEntity(entity) {
+        this.set(entity.id, entity);
+    }
+
+    /**
+     * Removes entity from this chunk
+     * @param id {Number} Entity Id
+     * @return {boolean} true if found and deleted
+     */
+    removeEntity(id) {
+        return this.delete(id);
+    }
+
+    /**
      * Gets entities iterator with location within this Chunk
      * @return {IterableIterator}
      */
@@ -65,22 +94,5 @@ export class Chunk extends Map {
      */
     get coord() {
         return this.#coord;
-    }
-
-    /**
-     * Adds entity to Chunk
-     * @param entity {GraphicEntity} Entity to add
-     */
-    addEntity(entity) {
-        this.set(entity.id, entity);
-    }
-
-    /**
-     * Removes entity from this chunk
-     * @param id {Number} Entity Id
-     * @return {boolean} true if found and deleted
-     */
-    removeEntity(id) {
-        return this.delete(id);
     }
 }
