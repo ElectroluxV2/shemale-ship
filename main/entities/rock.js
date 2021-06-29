@@ -10,10 +10,10 @@ export class Rock extends Entity {
     #color = '#FFF';
     #angles = [];
 
-    constructor(position = new Position()) {
-        super(null, position);
+    constructor(id = null, position = new Position()) {
+        super(id, position);
         this.#sides = Math.floor(this.random() * 10) % 8 + 5;
-        this.#sides = this.#sides * 10;
+        this.#size = this.#sides * 10;
         this.#angles = this.#generateRandomAngles();
     }
 
