@@ -1,9 +1,9 @@
-import { Entity } from './entity.js';
+import { StaticEntity } from './staticEntity.js';
 import { Position } from '../objects/position.js';
 import { Point } from '../objects/point.js';
 import { Polyfills } from '../utils/polyfills.js';
 
-export class BackgroundStar extends Entity {
+export class BackgroundStar extends StaticEntity {
     static #MAX_SIZE = 10;
     static #MIN_SIZE = 4;
     #size;

@@ -2,7 +2,7 @@ import { Random } from '../utils/random.js';
 import { Coord } from './coord.js';
 import { Matrix } from '../utils/matrix.js';
 import { Position } from './position.js';
-// import { BackgroundStar } from '../entities/backgroundStar.js';
+import { BackgroundStar } from '../static-entities/backgroundStar.js';
 
 export class Chunk extends Map {
     static DEBUG = false;
@@ -29,7 +29,7 @@ export class Chunk extends Map {
             const y = this.#randomInRange(worldCoordMin.y, worldCoordMax.y);
             const angle = this.#randomInRange(0, 360);
 
-            // this.addEntity(new BackgroundStar(new Position(x, y, angle)));
+            this.addEntity(new BackgroundStar(new Position(x, y, angle)));
         }
     }
 
@@ -57,7 +57,7 @@ export class Chunk extends Map {
 
     /**
      * Adds entity to Chunk
-     * @param entity {Entity} Entity to add
+     * @param entity {Entity|StaticEntity} Entity to add
      */
     addEntity(entity) {
         this.set(entity.id, entity);
