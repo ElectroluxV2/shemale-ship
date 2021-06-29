@@ -1,15 +1,15 @@
+import { Polyfills } from './utils/polyfills.js';
 import { Game } from './game.js';
-import { Polyfills } from '../utils/polyfills.js';
 
 const workerContext = {
     game: null,
     mainCanvas: null,
-    physicsWorkerToMainWorkerChannel: null,
-    constructor: ({canvas, window, physicsWorkerToMainWorkerChannel}) => {
-        workerContext.physicsWorkerToMainWorkerChannel = physicsWorkerToMainWorkerChannel;
-        workerContext.mainCanvas = canvas;
+    physicsCanvas: null,
+    constructor: ({mainCanvas, physicsCanvas, window}) => {
+        workerContext.mainCanvas = mainCanvas;
+        workerContext.physicsCanvas = physicsCanvas;
         workerContext.windowOnResize({window});
-        workerContext.game = new Game(workerContext.mainCanvas, window, physicsWorkerToMainWorkerChannel);
+        workerContext.game = new Game(workerContext.mainCanvas, workerContext.physicsCanvas, window);
     },
     windowOnKeyDown: ({key}) => {
         workerContext.game.keyboardStates[key] = true;
@@ -28,7 +28,7 @@ const workerContext = {
     }
 };
 
-onmessage = ({data} = event) => workerContext[data.type](data);
+onmessage = ({data} = event) => workerContext[data.function](data);
 
 // Polyfill for canvas.context.reset();
 OffscreenCanvasRenderingContext2D.prototype.reset = Polyfills.canvasContextReset;

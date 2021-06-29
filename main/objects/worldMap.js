@@ -1,12 +1,11 @@
-import { Matrix } from './matrix.js';
-import { Coord } from './coord.js';
+import { Matrix } from '../utils/matrix.js';
 import { Chunk } from './chunk.js';
+import { Coord } from './coord.js';
+import { Entity } from '../entities/entity.js';
 
 export class WorldMap {
     #chunks = new Map();
     #entities = new Map();
-
-    constructor() { }
 
     get entities() {
         return this.#entities.values();
@@ -19,34 +18,42 @@ export class WorldMap {
     addEntity(entity) {
         this.getChunkByWorldCoord(entity.position).set(entity.id, entity);
         this.#entities.set(entity.id, entity);
+        entity.addEventListener(Entity.EVENT_ON_CHUNK_CHANGE, this.updateEntityPositionListener.bind(this));
     }
 
     removeEntity(id) {
-        const entityCoord = this.#entities.get(id).position;
+        const entity = this.#entities.get(id);
+        entity.removeEventListener(Entity.EVENT_ON_CHUNK_CHANGE, this.updateEntityPositionListener);
+        const entityCoord = entity.position;
         this.getChunkByWorldCoord(entityCoord).delete(id);
         this.#entities.delete(id);
     }
 
-    updateEntityPosition(id, position) {
+    updateEntityPositionListener({detail: {entity}}) {
+        this.updateEntityPosition(entity);
+    }
+
+    updateEntityPosition({id, position, chunkCoord: {old, now}}) {
         // Get last chunk based on last position
-        const lastChunkIndex = this.getChunkIndexByChunkCoord(this.#entities.get(id).position.toChunkCoord());
+        const lastChunkIndex = this.getChunkIndexByChunkCoord(old);
 
         // Update entity position
         const entity = this.#entities.get(id);
         entity.position.import(position);
 
         // Get new chunk based on new position
-        const newChunkIndex = this.getChunkIndexByChunkCoord(entity.position.toChunkCoord());
+        const newChunkIndex = this.getChunkIndexByChunkCoord(now);
 
         // If chunk has changed
         if (lastChunkIndex !== newChunkIndex) {
+
             // Remove from previous chunk
             if (!this.getChunkByIndex(lastChunkIndex).delete(id)) {
                 console.error("tf", this.getChunkByIndex(lastChunkIndex), id, this.#chunks);
             }
 
             // Add to new chunk
-            (this.getChunkByIndex(newChunkIndex) ?? this.generateChunk(entity.position.toChunkCoord())).set(id, entity);
+            (this.getChunkByIndex(newChunkIndex) ?? this.generateChunk(now)).set(id, entity);
         }
     }
 
@@ -64,7 +71,7 @@ export class WorldMap {
      * @param coord {Coord} World Coordinate
      */
     getChunkByWorldCoord(coord) {
-        const chunkCoord = coord.toChunkCoord();
+        const chunkCoord = Chunk.toChunkCoord(coord);
         const index = Matrix.getIndex(chunkCoord);
         return this.getChunkByIndex(index) ?? this.generateChunk(chunkCoord);
     }

@@ -16,9 +16,9 @@ export class Position extends Coord {
 
     export() {
         return {
-          x: this.x,
-          y: this.y,
-          angle: this.#angle
+            x: this.x,
+            y: this.y,
+            angle: this.#angle
         };
     }
 

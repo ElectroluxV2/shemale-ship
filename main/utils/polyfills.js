@@ -1,4 +1,4 @@
-import { Point } from './point.js';
+import { Point } from '../objects/point.js';
 
 export class Polyfills {
     static canvasContextReset() {
