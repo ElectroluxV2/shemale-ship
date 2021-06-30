@@ -42,4 +42,4 @@ window.onpointermove = event => mainWorker.postMessage({
     function: 'onPointerMove',
     x: event.clientX,
     y: event.clientY
-})
+});
