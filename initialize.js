@@ -1,4 +1,3 @@
-'use strict';
 import { Polyfills } from './main/utils/polyfills.js';
 
 // Prepare all Workers
