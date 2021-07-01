@@ -89,7 +89,7 @@ export class Game {
         this.#camera.draw(this.#worldMap);
 
         this.#mainCanvasContext.fillStyle = 'red';
-        this.#mainCanvasContext.fillRect(this.#cursor?.x ?? 0, this.#cursor?.y ?? 0, 1, 1);
+        this.#mainCanvasContext.fillRect(this.#cursor?.x - 2 ?? 0, this.#cursor?.y - 2 ?? 0, 2, 2);
 
         // Measure frame time
         const stop = performance.now();

@@ -29,8 +29,8 @@ export class Entity extends EventTarget {
         this.#physicsData = new PhysicsData();
 
         this.chunkCoord = {
-            now: new Coord(),
-            old: new Coord()
+            now: undefined,
+            old: undefined
         };
 
         this.#onChunkChange = new CustomEvent(Entity.EVENT_ON_CHUNK_CHANGE, {
