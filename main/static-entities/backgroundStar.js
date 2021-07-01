@@ -46,7 +46,7 @@ export class BackgroundStar extends StaticEntity {
         ctx.closePath();
         ctx.fill();
         ctx.beginPath();
-        const path = this.path(this.vertices(this, origin));
+        const path = this.path(this.vertices(origin));
         ctx.strokeStyle = '#FFF';
         ctx.lineWidth = 1;
         ctx.stroke(path);
