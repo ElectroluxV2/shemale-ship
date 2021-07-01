@@ -21,6 +21,8 @@ const workerContext = {
         // Adjust to new dimensions
         workerContext.mainCanvas.height = window.innerHeight;
         workerContext.mainCanvas.width = window.innerWidth;
+        workerContext.physicsCanvas.height = window.innerHeight;
+        workerContext.physicsCanvas.width = window.innerWidth;
     },
     onPointerMove: ({x, y}) => {
         workerContext.game?.onPointerMove(x, y);
