@@ -17,10 +17,6 @@ export class WorldMap {
     }
 
     addEntity(entity) {
-        const c1 = new Coord();
-        const c2 = new Coord();
-        const c3 = new Coord(1, 1);
-
         // General purpose Map
         this.#entities.set(entity.id, entity);
         // Add to chunk
