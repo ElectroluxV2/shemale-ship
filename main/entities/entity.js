@@ -46,7 +46,7 @@ export class Entity extends EventTarget {
         this.chunkCoord.old = this.chunkCoord.now;
         this.chunkCoord.now = Chunk.toChunkCoord(this.position);
 
-        if (this.chunkCoord.old.x === this.chunkCoord.now.x && this.chunkCoord.old.y === this.chunkCoord.now.y) {
+        if (this.chunkCoord.old?.x === this.chunkCoord.now?.x && this.chunkCoord.old?.y === this.chunkCoord.now?.y) {
             return;
         }
 
