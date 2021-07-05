@@ -6,6 +6,7 @@ import { Chunk } from '../objects/chunk.js';
 import { PhysicsEngine } from '../physicsEngine.js';
 
 export class UserControlledShip extends Entity {
+    static #DRAW_VERTICES = true;
     static ID = -1;
     static thrustLeft = 0.8;
     static thrustRight = this.thrustLeft;
@@ -39,12 +40,21 @@ export class UserControlledShip extends Entity {
 
     draw(ctx, origin) {
         // Body
-        const path = this.path(this.vertices(origin));
+        const vertices = this.vertices(origin);
+        const path = this.path(vertices);
         ctx.strokeStyle = this.#color;
         ctx.lineWidth = path.lineWidth;
         ctx.fillStyle = '#222';
         ctx.fill(path);
         ctx.stroke(path);
+
+        if (UserControlledShip.#DRAW_VERTICES) {
+            for (const vertex of vertices) {
+                ctx.fillStyle = 'red';
+                ctx.fillRect(vertex.x - 4, vertex.y - 4,4,4);
+
+            }
+        }
 
         // center
         ctx.fillStyle = '#FF0000';
