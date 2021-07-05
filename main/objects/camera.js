@@ -5,6 +5,7 @@ import { Chunk } from './chunk.js';
 
 export class Camera {
     static #DRAW_CHUNK_GRID = true;
+    static #DRAW_CHUNK_COORD = true;
     #context;
     #canvas;
     #position;
@@ -33,6 +34,16 @@ export class Camera {
                         Chunk.CHUNK_SIZE,
                         Chunk.CHUNK_SIZE
                     );
+
+                    if (Camera.#DRAW_CHUNK_COORD) {
+
+                        this.#context.fillStyle = '#a0937d';
+                        this.#context.font = 'bold 16px Arial';
+
+                        const text = `${coord.x} ${coord.y}`;
+                        const textSize = this.#context.measureText(text);
+                        this.#context.fillText(text, coord.x * Chunk.CHUNK_SIZE - this.position.x + (this.#canvas.width / 2), coord.y * Chunk.CHUNK_SIZE - this.position.y + (this.#canvas.height / 2) + textSize.fontBoundingBoxAscent);
+                    }
                 }
 
                 this.#context.stroke();
