@@ -1,5 +1,5 @@
-import { Polyfills } from './utils/polyfills.js';
-import { Game } from './game.js';
+import { Polyfills } from '../utils/polyfills.js';
+import { Game } from '../game.js';
 
 const workerContext = {
     game: null,

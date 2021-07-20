@@ -1,7 +1,7 @@
 import { Polyfills } from './main/utils/polyfills.js';
 
 // Prepare all Workers
-const mainWorker = new Worker('./main/mainWorker.js', {
+const mainWorker = new Worker('./main/workers/mainWorker.js', {
     type: 'module'
 });
 
