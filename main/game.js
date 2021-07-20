@@ -42,7 +42,7 @@ export class Game {
 
 
         for (let i = 1; i < 20; i++) {
-            this.#worldMap.addEntity(new Rock(i, new Position(300 + i, 300 + i)));
+            // this.#worldMap.addEntity(new Rock(i, new Position(300 + i, 300 + i)));
         }
 
         this.mainLoop();

@@ -48,8 +48,8 @@ export class Camera {
 
                 this.#context.stroke();
                 for (const entity of chunk.values()) {
-                    const origin = new Point(-this.position.x + (this.#canvas.width / 2), -this.position.y + (this.#canvas.height / 2));
-                    entity.draw(this.#context, origin);
+                    const offset = new Point(-this.position.x + (this.#canvas.width / 2), -this.position.y + (this.#canvas.height / 2));
+                    entity.draw(this.#context, offset);
                 }
             }
         }

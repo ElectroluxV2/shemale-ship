@@ -58,7 +58,7 @@ export class Entity extends EventTarget {
 
     get box() {
         if (this.#box === null) {
-            this.#box = Box.fromVertices(this.vertices());
+            this.#box = Box.fromVertices(this.vertices(), this.position);
         }
 
         return this.#box;
@@ -128,6 +128,8 @@ export class Entity extends EventTarget {
      * @return {boolean} Returns true if any point is within given path
      */
     isColliding(ctx, points, path) {
+        isBoxColliding()
+
         ctx.lineWidth = path.lineWidth;
 
         for (const point of points) {

@@ -58,7 +58,7 @@ export class UserControlledShip extends Entity {
         }
 
         if (UserControlledShip.#DRAW_BOX) {
-            this.box.draw(ctx);
+            this.box.draw(ctx, origin, this.position);
         }
 
         // center
