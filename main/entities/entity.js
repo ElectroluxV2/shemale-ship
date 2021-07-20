@@ -5,6 +5,7 @@ import { Coord } from '../objects/coord.js';
 import { Point } from '../objects/point.js';
 import { PhysicsData } from '../objects/physicsData.js';
 import { Chunk } from '../objects/chunk.js';
+import { Box } from '../objects/box.js';
 
 export class Entity extends EventTarget {
     static EVENT_ON_CHUNK_CHANGE = 'EVENT_ON_CHUNK_CHANGE';
@@ -13,6 +14,7 @@ export class Entity extends EventTarget {
     #random;
     #physicsData;
     #onChunkChange;
+    #box;
     chunkCoord;
 
     /**
@@ -27,6 +29,7 @@ export class Entity extends EventTarget {
         this.#position = position;
         this.#random = Random.getSeededRandom(this.#id);
         this.#physicsData = new PhysicsData();
+        this.#box = null;
 
         this.chunkCoord = {
             now: undefined,
@@ -51,6 +54,14 @@ export class Entity extends EventTarget {
         }
 
         this.dispatchEvent(this.#onChunkChange);
+    }
+
+    get box() {
+        if (this.#box === null) {
+            this.#box = Box.fromVertices(this.vertices());
+        }
+
+        return this.#box;
     }
 
     /**

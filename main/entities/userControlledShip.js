@@ -7,12 +7,13 @@ import { PhysicsEngine } from '../physicsEngine.js';
 
 export class UserControlledShip extends Entity {
     static #DRAW_VERTICES = true;
+    static #DRAW_BOX = true;
     static ID = -1;
     static thrustLeft = 0.8;
     static thrustRight = this.thrustLeft;
     static thrustForward = 1;
     static thrustBackward = 0.2;
-    #color = '#FFF'
+    #color = '#FFF';
 
     constructor(position) {
         super(UserControlledShip.ID, position);
@@ -54,6 +55,10 @@ export class UserControlledShip extends Entity {
                 ctx.fillRect(vertex.x - 4, vertex.y - 4,4,4);
 
             }
+        }
+
+        if (UserControlledShip.#DRAW_BOX) {
+            this.box.draw(ctx);
         }
 
         // center

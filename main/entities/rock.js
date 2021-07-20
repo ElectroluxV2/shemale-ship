@@ -70,6 +70,8 @@ export class Rock extends Entity {
         ctx.lineWidth = path.lineWidth;
         ctx.stroke(path);
 
+        this.box.draw(ctx);
+
         // center
         ctx.fillStyle = '#FF0000';
         ctx.fillRect(this.position.x - 2 + origin.x, this.position.y - 2 + origin.y, 4, 4);
