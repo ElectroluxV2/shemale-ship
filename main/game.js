@@ -86,7 +86,7 @@ export class Game {
 
         this.#physicsEngine.tick();
 
-        this.#camera.draw2();
+        this.#camera.draw();
 
         this.#mainCanvasContext.fillStyle = 'red';
         this.#mainCanvasContext.fillRect(this.#cursor?.x - 2 ?? 0, this.#cursor?.y - 2 ?? 0, 2, 2);

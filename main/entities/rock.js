@@ -38,8 +38,8 @@ export class Rock extends Entity {
         return angles;
     }
 
-    vertices(origin = new Point(0, 0)) {
-        const position = new Position(this.position.x + origin.x, this.position.y + origin.y, this.position.angle);
+    vertices() {
+        const position = new Position(this.position.x, this.position.y, this.position.angle);
         const result = [];
         const first = new Point(position.x + this.#size * Math.cos(0), position.y - this.#size * Math.sin(0));
         result.push(Polyfills.rotate(position, first, position.radians));
@@ -64,8 +64,8 @@ export class Rock extends Entity {
         return path;
     }
 
-    draw(ctx, origin) {
-        const path = this.path(this.vertices(origin));
+    draw(ctx) {
+        const path = this.path(this.vertices());
         ctx.strokeStyle = this.color;
         ctx.lineWidth = path.lineWidth;
         ctx.stroke(path);
@@ -74,7 +74,7 @@ export class Rock extends Entity {
 
         // center
         ctx.fillStyle = '#FF0000';
-        ctx.fillRect(this.position.x - 2 + origin.x, this.position.y - 2 + origin.y, 4, 4);
+        ctx.fillRect(this.position.x - 2, this.position.y - 2, 4, 4);
 
         ctx.fillStyle = '#a0937d';
         ctx.font = 'bold 16px Arial';
@@ -82,7 +82,7 @@ export class Rock extends Entity {
         const chunkCoord = Chunk.toChunkCoord(this.position);
         const text = `${chunkCoord.x} ${chunkCoord.y}`;
         const textSize = ctx.measureText(text);
-        ctx.fillText(text, this.position.x + origin.x - textSize.width / 2, this.position.y + origin.y + textSize.fontBoundingBoxAscent / 2);
+        ctx.fillText(text, this.position.x - textSize.width / 2, this.position.y + textSize.fontBoundingBoxAscent / 2);
     }
 
     tick() {

@@ -13,8 +13,8 @@ export class BackgroundStar extends StaticEntity {
         this.#size = (this.random() * (BackgroundStar.#MAX_SIZE - BackgroundStar.#MIN_SIZE + 1) + BackgroundStar.#MIN_SIZE) << 0;
     }
 
-    vertices(origin = new Point(0, 0)) {
-        const position = new Position(this.position.x + origin.x, this.position.y + origin.y, this.position.angle);
+    vertices() {
+        const position = new Position(this.position.x, this.position.y, this.position.angle);
         const result = [];
         for (let i = 0; i < 6; i++) {
             let tempX = this.#size * Math.cos(i * 60 * Math.PI / 180) + position.x;
@@ -36,17 +36,17 @@ export class BackgroundStar extends StaticEntity {
         return path;
     }
 
-    draw(ctx, origin = new Point(0, 0)) {
-        const gradient = ctx.createRadialGradient(this.position.x + origin.x, this.position.y + origin.y, 1, this.position.x + origin.x, this.position.y + origin.y, 30)
+    draw(ctx) {
+        const gradient = ctx.createRadialGradient(this.position.x, this.position.y, 1, this.position.x, this.position.y, 30);
         gradient.addColorStop(0, '#FFFFFF30');
         gradient.addColorStop(1, 'transparent');
         ctx.fillStyle = gradient;
         ctx.beginPath();
-        ctx.arc(this.position.x + origin.x, this.position.y + origin.y, this.#size * this.#size, 0, 2 * Math.PI);
+        ctx.arc(this.position.x, this.position.y, this.#size * this.#size, 0, 2 * Math.PI);
         ctx.closePath();
         ctx.fill();
         ctx.beginPath();
-        const path = this.path(this.vertices(origin));
+        const path = this.path(this.vertices());
         ctx.strokeStyle = '#FFF';
         ctx.lineWidth = 1;
         ctx.stroke(path);
