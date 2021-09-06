@@ -37,6 +37,13 @@ export class WorldMap {
         this.#entities.delete(id);
     }
 
+    /**
+     * @returns {Entity}
+     */
+    getEntity(id) {
+        return this.#entities.get(id);
+    }
+
     entityChunkChangeListener({detail: {entity}}) {
         this.moveEntityBetweenChunks(entity);
     }

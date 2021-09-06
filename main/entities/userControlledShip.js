@@ -10,7 +10,7 @@ export class UserControlledShip extends Entity {
     static #DRAW_BOX = true;
     static ID = -1;
     static thrustLeft = 0.8;
-    static thrustRight = this.thrustLeft;
+    static thrustRight = UserControlledShip.thrustLeft;
     static thrustForward = 1;
     static thrustBackward = 0.2;
     #color = '#FFF';
@@ -19,8 +19,8 @@ export class UserControlledShip extends Entity {
         super(UserControlledShip.ID, position);
     }
 
-    vertices(origin = new Point(0, 0)) {
-        const position = new Position(this.position.x + origin.x, this.position.y + origin.y, this.position.angle);
+    vertices() {
+        const position = new Position(this.position.x, this.position.y, this.position.angle);
         const result = [];
         result.push(Polyfills.rotate(position, new Point(position.x - 36, position.y + 25), -position.radians));
         result.push(Polyfills.rotate(position, new Point(position.x + 36, position.y + 25), -position.radians));
@@ -39,9 +39,9 @@ export class UserControlledShip extends Entity {
         return path;
     }
 
-    draw(ctx, origin) {
+    draw(ctx) {
         // Body
-        const vertices = this.vertices(origin);
+        const vertices = this.vertices();
         const path = this.path(vertices);
         ctx.strokeStyle = this.#color;
         ctx.lineWidth = path.lineWidth;
@@ -58,19 +58,19 @@ export class UserControlledShip extends Entity {
         }
 
         if (UserControlledShip.#DRAW_BOX) {
-            this.box.draw(ctx, origin, this.position);
+            this.box.draw(ctx, this.position);
         }
 
         // center
         ctx.fillStyle = '#FF0000';
-        ctx.fillRect(this.position.x - 2 + origin.x, this.position.y - 2 + origin.y, 4, 4);
+        ctx.fillRect(this.position.x - 2, this.position.y - 2, 4, 4);
 
         ctx.fillStyle = '#a0937d';
         ctx.font = 'bold 16px Arial';
 
         const text = `${Chunk.toChunkCoord(this.position).x} ${Chunk.toChunkCoord(this.position).y}`;
         const textSize = ctx.measureText(text);
-        ctx.fillText(text, this.position.x + origin.x - textSize.width / 2, this.position.y + origin.y + textSize.fontBoundingBoxAscent / 2);
+        ctx.fillText(text, this.position.x - textSize.width / 2, this.position.y + textSize.fontBoundingBoxAscent / 2);
     }
 
     tick() {

@@ -83,7 +83,7 @@ export class Box {
      * @param ctx {CanvasRenderingContext2D} Canvas context
      * @param origin {Point} Origin
      */
-    draw(ctx, origin, entity_origin) {
+    draw(ctx, origin = new Point(0, 0), entity_origin = new Point(0, 0)) {
         ctx.beginPath();
         ctx.moveTo(this.topLeft.x + origin.x + entity_origin.x, this.topLeft.y + origin.y + entity_origin.y);
         ctx.lineTo(this.bottomRight.x + origin.x + entity_origin.x, this.topLeft.y + origin.y + entity_origin.y);

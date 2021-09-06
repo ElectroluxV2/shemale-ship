@@ -24,7 +24,7 @@ export class Game {
         this.keyboardStates = new Map();
         this.#worldMap = new WorldMap();
         this.#userControlledShip = new UserControlledShip(new Position(this.#window.innerWidth / 3, this.#window.innerHeight / 3));
-        this.#camera = new Camera(this.#mainCanvasContext);
+        this.#camera = new Camera(this.#mainCanvasContext, this.#window, this.#worldMap);
         this.#physicsEngine = new PhysicsEngine(physicsCanvas, this.#worldMap);
 
         // Update starting camera position
@@ -86,7 +86,7 @@ export class Game {
 
         this.#physicsEngine.tick();
 
-        this.#camera.draw(this.#worldMap);
+        this.#camera.draw2();
 
         this.#mainCanvasContext.fillStyle = 'red';
         this.#mainCanvasContext.fillRect(this.#cursor?.x - 2 ?? 0, this.#cursor?.y - 2 ?? 0, 2, 2);

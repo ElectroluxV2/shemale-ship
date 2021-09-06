@@ -36,7 +36,7 @@ export class BackgroundStar extends StaticEntity {
         return path;
     }
 
-    draw(ctx, origin) {
+    draw(ctx, origin = new Point(0, 0)) {
         const gradient = ctx.createRadialGradient(this.position.x + origin.x, this.position.y + origin.y, 1, this.position.x + origin.x, this.position.y + origin.y, 30)
         gradient.addColorStop(0, '#FFFFFF30');
         gradient.addColorStop(1, 'transparent');
