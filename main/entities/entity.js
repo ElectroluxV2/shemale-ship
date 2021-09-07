@@ -57,11 +57,7 @@ export class Entity extends EventTarget {
     }
 
     get box() {
-        if (this.#box === null) {
-            this.#box = Box.fromVertices(this.vertices(), this.position);
-        }
-
-        return this.#box;
+        return Box.fromVertices(this.vertices(), this.position);
     }
 
     /**

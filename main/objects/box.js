@@ -57,7 +57,7 @@ export class Box {
      * @returns {Box}
      */
     static fromVertices(vertices, position) {
-        let min = new Point(Number.MAX_VALUE, Number.MAX_VALUE), max = new Point(Number.MIN_VALUE, Number.MIN_VALUE);
+        let min = new Point(Number.MAX_VALUE, Number.MAX_VALUE), max = new Point(-Number.MAX_VALUE, -Number.MAX_VALUE);
         for (const vertex of vertices) {
             if (vertex.x < min.x) min.x = vertex.x;
             if (vertex.y < min.y) min.y = vertex.y;
@@ -65,7 +65,6 @@ export class Box {
             if (vertex.x > max.x) max.x = vertex.x;
             if (vertex.y > max.y) max.y = vertex.y;
         }
-        console.log(min, max)
         return Box.fromPoints(min, max, position);
     }
 
@@ -83,12 +82,12 @@ export class Box {
      * @param ctx {CanvasRenderingContext2D} Canvas context
      * @param origin {Point} Origin
      */
-    draw(ctx, origin = new Point(0, 0), entity_origin = new Point(0, 0)) {
+    draw(ctx) {
         ctx.beginPath();
-        ctx.moveTo(this.topLeft.x + origin.x + entity_origin.x, this.topLeft.y + origin.y + entity_origin.y);
-        ctx.lineTo(this.bottomRight.x + origin.x + entity_origin.x, this.topLeft.y + origin.y + entity_origin.y);
-        ctx.lineTo(this.bottomRight.x + origin.x + entity_origin.x, this.bottomRight.y + origin.y + entity_origin.y);
-        ctx.lineTo(this.topLeft.x + origin.x + entity_origin.x, this.bottomRight.y + origin.y + entity_origin.y);
+        ctx.moveTo(this.topLeft.x, this.topLeft.y);
+        ctx.lineTo(this.bottomRight.x, this.topLeft.y);
+        ctx.lineTo(this.bottomRight.x, this.bottomRight.y);
+        ctx.lineTo(this.topLeft.x, this.bottomRight.y);
         ctx.closePath();
         ctx.strokeStyle = 'lime';
         ctx.stroke();
