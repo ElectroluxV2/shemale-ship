@@ -5,6 +5,7 @@ import { Camera } from './objects/camera.js';
 import { PhysicsEngine } from './physicsEngine.js';
 import { Rock } from './entities/rock.js';
 import { WorldMap } from './objects/worldMap.js';
+import { SzudziksPairing } from './utils/szudziksPairing.js';
 
 export class Game {
     keyboardStates;

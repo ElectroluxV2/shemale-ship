@@ -1,6 +1,6 @@
 import { Random } from '../utils/random.js';
 import { Coord } from './coord.js';
-import { Matrix } from '../utils/matrix.js';
+import { SzudziksPairing } from '../utils/szudziksPairing.js';
 import { Position } from './position.js';
 import { BackgroundStar } from '../static-entities/backgroundStar.js';
 
@@ -16,7 +16,7 @@ export class Chunk extends Map {
     constructor(coord) {
         super();
         this.#coord = coord;
-        this.#index = Matrix.getIndex(coord);
+        this.#index = SzudziksPairing.pair(coord)
         this.#random = Random.getSeededRandom(this.#index);
 
         const worldCoordMin = new Coord(this.#coord.x * Chunk.CHUNK_SIZE, this.#coord.y * Chunk.CHUNK_SIZE);
@@ -81,7 +81,7 @@ export class Chunk extends Map {
     }
 
     /**
-     * Returns Chunk's Matrix index
+     * Returns Chunk's Szudziks pair
      * @return {Number}
      */
     get index() {

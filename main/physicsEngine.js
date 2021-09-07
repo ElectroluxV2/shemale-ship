@@ -21,6 +21,31 @@ export class PhysicsEngine {
 
     collision() {
         // TODO: threads
+        // for (const parent of this.#worldMap.entities) {
+        //     if (!parent instanceof Entity) continue;
+
+        //     parent.color = '#FFF';
+        //     const parentVertices = parent.vertices();
+
+        //     for (const child of this.#worldMap.entities) {
+        //         if (!child instanceof Entity) continue;
+        //         if (parent === child) continue;
+
+        //         const childVertices = child.vertices();
+
+
+        //         // TODO: simple hit box
+        //         if (child.isColliding(this.#physicsCanvasContext, parentVertices, child.path(childVertices)) || parent.isColliding(this.#physicsCanvasContext, childVertices, parent.path(parentVertices))) {
+
+        //             parent.color = '#db3992';
+        //             child.color = '#db3992';
+        //         }
+        //     }
+        // }
+    }
+
+    collision2() {
+        // TODO: threads
         for (const parent of this.#worldMap.entities) {
             if (!parent instanceof Entity) continue;
 

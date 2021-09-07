@@ -1,4 +1,4 @@
-import { Matrix } from '../utils/matrix.js';
+import { SzudziksPairing } from '../utils/szudziksPairing.js'
 import { Chunk } from './chunk.js';
 import { Coord } from './coord.js';
 import { Entity } from '../entities/entity.js';
@@ -67,7 +67,8 @@ export class WorldMap {
      * @returns {Chunk} Chunk
      */
     getChunkByChunkCoord(coord) {
-        const index = Matrix.getIndex(coord);
+        console.logs(coord);
+        const index = SzudziksPairing.pair(coord)
 
         if (this.#chunks.has(index)) {
             return this.#chunks.get(index);

@@ -29,13 +29,19 @@ export class UserControlledShip extends Entity {
     }
 
     path(vertices) {
+        const gun = new Path2D(); 
+        gun.rect(this.position.x-10,this.position.y-80, 20, 40);
+        gun.closePath();
+
         const path = new Path2D();
         path.moveTo(vertices[0].x, vertices[0].y);
         path.lineTo(vertices[1].x, vertices[1].y);
         path.lineTo(vertices[2].x, vertices[2].y);
-        path.lineWidth = 4;
         path.closePath();
 
+        path.lineWidth = 4;
+        
+        path.addPath(gun);
         return path;
     }
 
