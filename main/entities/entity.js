@@ -124,7 +124,7 @@ export class Entity extends EventTarget {
      * @return {boolean} Returns true if any point is within given path
      */
     isColliding(ctx, points, path) {
-        isBoxColliding()
+        // isBoxColliding()
 
         ctx.lineWidth = path.lineWidth;
 
