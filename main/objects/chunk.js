@@ -5,8 +5,22 @@ import { Position } from './position.js';
 import { BackgroundStar } from '../static-entities/backgroundStar.js';
 
 export class Chunk extends Map {
+    // static NEIGHBOUR = {
+    //     LEFT: 'LEFT',
+    //     RIGHT: 'RIGHT',
+    //     TOP: 'TOP',
+    //     BOTTOM: 'BOTTOM',
+    // };
+
+    // static DIAGONAL_NEIGHBOUR = {
+    //     TOP_LEFT: 'TOP_LEFT',
+    //     TOP_RIGHT: 'TOP_RIGHT',
+    //     BOTTOM_LEFT: 'BOTTOM_LEFT',
+    //     BOTTOM_RIGHT: 'BOTTOM_RIGHT',
+    // };
+
     static DEBUG = false;
-    static CHUNK_SIZE = 200;
+    static CHUNK_SIZE = 300;
     static MAX_STARS = 5;
     static MIN_STARS = 1;
     #coord;
@@ -54,6 +68,27 @@ export class Chunk extends Map {
         const resultY = Math.floor(y / Chunk.CHUNK_SIZE);
         return new Coord(resultX, resultY);
     }
+
+    /**
+     * @returns {Generator<Coord>}
+     */
+    // *neighbours() {
+        
+    // }
+
+    // neighbour(direction) {
+    //     switch (direction) {
+    //         case Chunk.NEIGHBOUR.BOTTOM: return new Coord(this.#coord.x, this.#coord.y - 1);
+    //         case Chunk.NEIGHBOUR.LEFT: return new Coord(this.#coord.x - 1, this.#coord.y);
+    //         case Chunk.NEIGHBOUR.RIGHT: return new Coord(this.#coord.x + 1, this.#coord.y);
+    //         case Chunk.NEIGHBOUR.TOP: return new Coord(this.#coord.x, this.#coord.y + 1);
+    //         case Chunk.DIAGONAL_NEIGHBOUR.BOTTOM_LEFT: return new Coord(this.#coord.x - 1, this.#coord.y - 1);
+    //         case Chunk.DIAGONAL_NEIGHBOUR.BOTTOM_RIGHT: return new Coord(this.#coord.x + 1, this.#coord.y - 1);
+    //         case Chunk.DIAGONAL_NEIGHBOUR.TOP_LEFT: return new Coord(this.#coord.x - 1, this.#coord.y + 1);
+    //         case Chunk.DIAGONAL_NEIGHBOUR.TOP_RIGHT: return new Coord(this.#coord.x + 1, this.#coord.y + 1);
+    //         default: 
+    //     }
+    // }
 
     /**
      * Adds entity to Chunk

@@ -4,10 +4,10 @@ import { Position } from '../objects/position.js';
 import { Point } from '../objects/point.js';
 import { Chunk } from '../objects/chunk.js';
 import { PhysicsEngine } from '../physicsEngine.js';
-
+import { Cannon } from '../static-entities/cannon.js';
 export class UserControlledShip extends Entity {
-    static #DRAW_VERTICES = true;
-    static #DRAW_BOX = true;
+    static #DRAW_VERTICES = false;
+    static #DRAW_BOX = false;
     static ID = -1;
     static thrustLeft = 0.8;
     static thrustRight = UserControlledShip.thrustLeft;
@@ -29,18 +29,14 @@ export class UserControlledShip extends Entity {
     }
 
     path(vertices) {
-        const gun = new Path2D(); 
-        gun.rect(this.position.x-10,this.position.y-80, 20, 40);
-        gun.closePath();
-
         const path = new Path2D();
         path.moveTo(vertices[0].x, vertices[0].y);
         path.lineTo(vertices[1].x, vertices[1].y);
         path.lineTo(vertices[2].x, vertices[2].y);
         path.closePath();
-
         path.lineWidth = 4;
         
+        const gun = Cannon.getPath(this.position, -this.position.radians)
         path.addPath(gun);
         return path;
     }

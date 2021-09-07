@@ -6,6 +6,8 @@ import { Chunk } from '../objects/chunk.js';
 import { Vector } from '../objects/vector.js';
 
 export class Rock extends Entity {
+    static #DRAW_VERTICES = false;
+    static #DRAW_BOX = false;
     #sides;
     #size;
     color = '#FFF';
@@ -65,12 +67,22 @@ export class Rock extends Entity {
     }
 
     draw(ctx) {
-        const path = this.path(this.vertices());
+        const vertices = this.vertices();
+        const path = this.path(vertices);
         ctx.strokeStyle = this.color;
         ctx.lineWidth = path.lineWidth;
         ctx.stroke(path);
 
-        this.box.draw(ctx);
+        if (Rock.#DRAW_VERTICES) {
+            for (const vertex of vertices) {
+                ctx.fillStyle = 'red';
+                ctx.fillRect(vertex.x - 4, vertex.y - 4,4,4);
+            }
+        }
+
+        if (Rock.#DRAW_BOX) {
+            this.box.draw(ctx, this.position);
+        }
 
         // center
         ctx.fillStyle = '#FF0000';

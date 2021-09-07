@@ -8,6 +8,16 @@ export class Box {
     topLeft;
 
     /**
+     * @var {Point} topRight Top right corner of box
+     */
+    topRight;
+
+    /**
+     * @var {Point} bottomLeft Bottom left corner of box
+     */
+    bottomLeft;
+
+    /**
      * @var {Point} bottomRight Bottom right corner of box
      */
     bottomRight;
@@ -18,9 +28,12 @@ export class Box {
      * @param bottomRight {Point} Bottom right corner of box
      * @param position {Position} Entity's position
      */
-    constructor(topLeft, bottomRight, position) {
+    constructor(topLeft, bottomRight) {
         this.topLeft = topLeft;
         this.bottomRight = bottomRight;
+        
+        this.topRight = new Point(bottomRight.x, topLeft.y);
+        this.bottomLeft = new Point(topLeft.x, bottomRight.y);
     }
 
     /**
@@ -39,15 +52,15 @@ export class Box {
      * @param p2 {Point} Second point
      * @returns {Box}
      */
-    static fromPoints(p1, p2, position) {
+    static fromPoints(p1, p2) {
         if (p1.x > p2.x && p1.y < p2.y) {
-            return new Box(new Point(p2.x, p1.y), new Point(p1.x, p2.y), position);
+            return new Box(new Point(p2.x, p1.y), new Point(p1.x, p2.y));
         } else if (p1.x < p2.x && p1.y < p2.y) {
-            return new Box(p1, p2, position);
+            return new Box(p1, p2);
         } else if (p1.x > p2.x && p1.y > p2.y) {
-            return new Box(p2, p1, position);
+            return new Box(p2, p1);
         } else {
-            return new Box(new Point(p1.x, p2.y), new Point(p2.x, p1.y), position);
+            return new Box(new Point(p1.x, p2.y), new Point(p2.x, p1.y));
         }
     }
 
@@ -56,7 +69,7 @@ export class Box {
      * @param vertices {Point[]} Vertices
      * @returns {Box}
      */
-    static fromVertices(vertices, position) {
+    static fromVertices(vertices) {
         let min = new Point(Number.MAX_VALUE, Number.MAX_VALUE), max = new Point(-Number.MAX_VALUE, -Number.MAX_VALUE);
         for (const vertex of vertices) {
             if (vertex.x < min.x) min.x = vertex.x;
@@ -65,7 +78,7 @@ export class Box {
             if (vertex.x > max.x) max.x = vertex.x;
             if (vertex.y > max.y) max.y = vertex.y;
         }
-        return Box.fromPoints(min, max, position);
+        return Box.fromPoints(min, max);
     }
 
     /**
@@ -75,6 +88,23 @@ export class Box {
      */
     isPointInside(point) {
         return Box.isPointInside(this, point);
+    }
+
+    /**
+     * Returns true if top left or bottom right corner of given box is inside this Box
+     * @param box {Box} Box to check
+     * @returns {boolean}
+     */
+    isBoxIntercepts(box) {
+        return Box.isPointInside(this, box.topLeft) ||
+        Box.isPointInside(this, box.topRight) ||
+        Box.isPointInside(this, box.bottomLeft) ||
+        Box.isPointInside(this, box.bottomRight) ||
+
+        Box.isPointInside(box, this.topLeft) ||
+        Box.isPointInside(box, this.topRight) ||
+        Box.isPointInside(box, this.bottomLeft) ||
+        Box.isPointInside(box, this.bottomRight);
     }
 
     /**

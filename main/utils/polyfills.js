@@ -26,7 +26,7 @@ export class Polyfills {
     static logs(m) {
         const currentTime = performance.now();
 
-        if (currentTime - Polyfills.lastTime > 1000) {
+        if (currentTime - Polyfills.lastTime > 20) {
             Polyfills.lastTime = currentTime;
             console.log(m);
             return;

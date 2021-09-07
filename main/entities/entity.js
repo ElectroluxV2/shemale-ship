@@ -117,6 +117,16 @@ export class Entity extends EventTarget {
     }
 
     /**
+     * 
+     * @param {Box} firstBox 
+     * @param {Box} secondBox 
+     * @returns {Boolean}
+     */
+    isBoxColliding(firstBox, secondBox) {
+        return firstBox.isBoxIntercepts(secondBox) || secondBox.isBoxIntercepts(firstBox);
+    }
+
+    /**
      * Check collision of points with path
      * @param ctx {CanvasRenderingContext2D} Canvas to call isPointInPath on
      * @param points {Point[]} Array of construction points, each point will be tested if is within path
@@ -124,7 +134,6 @@ export class Entity extends EventTarget {
      * @return {boolean} Returns true if any point is within given path
      */
     isColliding(ctx, points, path) {
-        // isBoxColliding()
 
         ctx.lineWidth = path.lineWidth;
 

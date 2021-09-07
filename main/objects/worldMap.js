@@ -67,7 +67,6 @@ export class WorldMap {
      * @returns {Chunk} Chunk
      */
     getChunkByChunkCoord(coord) {
-        console.logs(coord);
         const index = SzudziksPairing.pair(coord)
 
         if (this.#chunks.has(index)) {

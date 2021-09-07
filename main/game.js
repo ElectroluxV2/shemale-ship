@@ -40,10 +40,10 @@ export class Game {
         this.#worldMap.addEntity(this.#userControlledShip);
 
         // BEGIN TEST
-
-
-        for (let i = 1; i < 20; i++) {
-            this.#worldMap.addEntity(new Rock(i, new Position(300 + i, 300 + i)));
+        const rir = (min, max) => Math.random() * (max - min) + min;
+        for (let i = 0; i < 10; i++) {
+            const position = new Position(rir(-1000, 1000), rir(-1000, 1000));
+            this.#worldMap.addEntity(new Rock(i, position));
         }
 
         this.mainLoop();
