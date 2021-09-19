@@ -6,6 +6,7 @@ import { PhysicsEngine } from './physicsEngine.js';
 import { Rock } from './entities/rock.js';
 import { WorldMap } from './objects/worldMap.js';
 import { SzudziksPairing } from './utils/szudziksPairing.js';
+import { Bullet } from './entities/bullet.js';
 
 export class Game {
     keyboardStates;
@@ -24,7 +25,7 @@ export class Game {
         this.#mainCanvasContext = mainCanvas.getContext('2d');
         this.keyboardStates = new Map();
         this.#worldMap = new WorldMap();
-        this.#userControlledShip = new UserControlledShip(new Position(this.#window.innerWidth / 3, this.#window.innerHeight / 3));
+        this.#userControlledShip = new UserControlledShip(this.#worldMap, new Position(this.#window.innerWidth / 3, this.#window.innerHeight / 3));
         this.#camera = new Camera(this.#mainCanvasContext, this.#window, this.#worldMap);
         this.#physicsEngine = new PhysicsEngine(physicsCanvas, this.#worldMap);
 
@@ -43,7 +44,7 @@ export class Game {
         const rir = (min, max) => Math.random() * (max - min) + min;
         for (let i = 0; i < 10; i++) {
             const position = new Position(rir(-1000, 1000), rir(-1000, 1000));
-            this.#worldMap.addEntity(new Rock(i, position));
+            this.#worldMap.addEntity(new Rock(this.#worldMap, i, position));
         }
 
         this.mainLoop();

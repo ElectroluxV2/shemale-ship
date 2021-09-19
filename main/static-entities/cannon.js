@@ -4,6 +4,8 @@ import { Polyfills } from '../utils/polyfills.js';
 
 
 export class Cannon extends StaticEntity {
+    
+
     static vertices(anchor, rotation) {
         const result = [];
         result.push(Polyfills.rotate(anchor, new Point(anchor.x - 10, anchor.y - 80), rotation));

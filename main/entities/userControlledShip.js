@@ -13,10 +13,12 @@ export class UserControlledShip extends Entity {
     static thrustRight = UserControlledShip.thrustLeft;
     static thrustForward = 1;
     static thrustBackward = 0.2;
+    #cannon;
     #color = '#FFF';
 
-    constructor(position) {
-        super(UserControlledShip.ID, position);
+    constructor(worldMap, position) {
+        super(worldMap, UserControlledShip.ID, position);
+        // this.#cannon = new Cannon(worldMap, this.position)
     }
 
     vertices() {
@@ -36,8 +38,8 @@ export class UserControlledShip extends Entity {
         path.closePath();
         path.lineWidth = 4;
         
-        const gun = Cannon.getPath(this.position, -this.position.radians)
-        path.addPath(gun);
+        // const gun = 
+        // path.addPath(gun);
         return path;
     }
 

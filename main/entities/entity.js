@@ -15,6 +15,7 @@ export class Entity extends EventTarget {
     #physicsData;
     #onChunkChange;
     #box;
+    #worldMap;
     chunkCoord;
 
     /**
@@ -22,7 +23,7 @@ export class Entity extends EventTarget {
      * @param id {Number} Preassigned id of object
      * @param position {Position} Initial position of object
      */
-    constructor(id = null, position = new Position()) {
+    constructor(worldMap, id = null, position = new Position()) {
         super();
         this.#id = id ?? Math.trunc(performance.now() * 1000000);
         Object.freeze(this.#id);
@@ -30,6 +31,7 @@ export class Entity extends EventTarget {
         this.#random = Random.getSeededRandom(this.#id);
         this.#physicsData = new PhysicsData();
         this.#box = null;
+        this.#worldMap = worldMap;
 
         this.chunkCoord = {
             now: undefined,
@@ -54,6 +56,10 @@ export class Entity extends EventTarget {
         }
 
         this.dispatchEvent(this.#onChunkChange);
+    }
+
+    get worldMap(){
+        return this.#worldMap;
     }
 
     get box() {
@@ -117,16 +123,6 @@ export class Entity extends EventTarget {
     }
 
     /**
-     * 
-     * @param {Box} firstBox 
-     * @param {Box} secondBox 
-     * @returns {Boolean}
-     */
-    isBoxColliding(firstBox, secondBox) {
-        return firstBox.isBoxIntercepts(secondBox) || secondBox.isBoxIntercepts(firstBox);
-    }
-
-    /**
      * Check collision of points with path
      * @param ctx {CanvasRenderingContext2D} Canvas to call isPointInPath on
      * @param points {Point[]} Array of construction points, each point will be tested if is within path
@@ -134,6 +130,7 @@ export class Entity extends EventTarget {
      * @return {boolean} Returns true if any point is within given path
      */
     isColliding(ctx, points, path) {
+        // isBoxColliding()
 
         ctx.lineWidth = path.lineWidth;
 

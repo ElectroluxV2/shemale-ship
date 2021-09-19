@@ -13,8 +13,8 @@ export class Rock extends Entity {
     color = '#FFF';
     #angles = [];
 
-    constructor(id = null, position = new Position()) {
-        super(id, position);
+    constructor(worldMap, id = null, position = new Position()) {
+        super(worldMap, id, position);
         this.#sides = Math.floor(this.random() * 10) % 8 + 5;
         this.#size = this.#sides * 10;
         this.#angles = this.#generateRandomAngles();
